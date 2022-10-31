@@ -10,7 +10,7 @@ interface BoardProps {
 
 export const Board = ({ pieces, setPieces}: BoardProps) => {
   
-  // const [fieldData, ssetFields] = useState<any>();
+
 
 
   return (

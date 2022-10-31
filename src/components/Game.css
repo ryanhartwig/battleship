@@ -1,0 +1,14 @@
+#gameinfo {
+  /* position: absolute; */
+  top: 0;
+  width: 100%;
+  position: absolute;
+  border-bottom: 1px solid black;
+}
+
+#info-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}

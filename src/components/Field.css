@@ -1,0 +1,20 @@
+/* Each grid field */
+.field {
+  border: 1px solid black;
+  transition: all 0.15s;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.field:hover {
+  background: #96969631;
+}
+
+
+/*  */
+.clicked::after {
+  content: '🚢'
+}
+

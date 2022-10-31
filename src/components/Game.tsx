@@ -5,7 +5,7 @@ import { Board } from './Board';
 import { useAppSelector } from '../app/hooks';
 import { selectSettings } from '../store-state/settings/settingsSlice';
 import { useDispatch } from 'react-redux';
-import { togglePlaceMode } from '../store-state/game/gameSlice';
+import { togglePlaceMode } from '../store-state/gameSlice';
 
 export const Main = () => {
   const dispatch = useDispatch();

@@ -42,7 +42,8 @@ export const ShipItem: React.FC<ShipItemProps> = ({ ship, unselectable, creating
           !!editingShip ||
           ship.segments.length >= maxShipLength,
         'ship-selected': editingShip === ship.id,
-        'ship-creating': creating
+        'ship-creating': creating,
+        'ship-invalid': ship.invalid
       })}
       onClick={onSelectShip}
       style={{

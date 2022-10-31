@@ -9,6 +9,13 @@
   justify-content: center;
   align-items: center;
 
+  cursor: pointer;
+
+}
+
+.field.disabled {
+  background-color: rgba(0,0,0,0.15);
+  pointer-events: none;
 }
 
 .field:hover {

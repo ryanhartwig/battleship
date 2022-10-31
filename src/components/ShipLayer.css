@@ -1,0 +1,26 @@
+.ship {
+  background-color: rgba(0,0,0,0.2);
+  border: 1px solid black;
+  border-radius: 100px;
+  margin: 15px;
+  transition: background-color linear 0.1s;
+  cursor: pointer;
+}
+
+.ship-unselectable {
+  pointer-events: none;
+}
+
+.ship-selected {
+  background-color: rgba(0,255,0,0.5);
+  border: 1px solid green;
+}
+
+.ship-creating {
+  background-color: rgb(242, 255, 0);
+  border: 1px solid yellow;
+}
+
+.ship:hover {
+  background-color: rgba(0,255,0,0.2);
+}

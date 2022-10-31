@@ -14,7 +14,5 @@
 }
 
 #board.placing {
-  
-  border: 2px solid orange;
-  
+  box-shadow: #e8b211 0 0 5px 2px;
 }

@@ -14,7 +14,7 @@ interface FieldProps {
 
 export const Field = ({pieces, setPieces, coords, showCoords}: FieldProps) => {
   
-  
+  const {x, y} = coords;
   const [clicked, setClicked] = useState<boolean>(false);
 
   const handleClick = useCallback((e: any) => {
@@ -28,7 +28,9 @@ export const Field = ({pieces, setPieces, coords, showCoords}: FieldProps) => {
 
   return (
     <>
-      <div className={`field ${clicked ? 'clicked' : ''}`} onMouseDown={handleClick} onMouseOver={handleClick}>
+      <div 
+      style={{gridArea: `${y} / ${x} / ${y} / ${x}`}}
+      className={`field ${clicked ? 'clicked' : ''}`} onMouseDown={handleClick} onMouseOver={handleClick}>
         {showCoords ? <p className="coord">{coords.x},{coords.y}</p>
           : clicked ? '🚢' : ''}
       </div>

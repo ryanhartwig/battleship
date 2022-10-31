@@ -26,7 +26,7 @@ const settingsReducer = createSlice({
     },
   }
 });
-  
+
 export const selectSettings = (state: RootState) => state.settings;
 
 export const { setStartPieces } = settingsReducer.actions;

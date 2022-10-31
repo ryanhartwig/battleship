@@ -1,17 +1,19 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
+import { useAppSelector } from '../app/hooks';
+import { selectSettings } from '../store-state/settings/settingsSlice';
 import './Board.css';
 import { Field } from './Field';
 
 interface BoardProps {
   pieces: number;
-  setPieces: React.Dispatch<React.SetStateAction<number>>;
   showCoords: boolean;
+  setPieces: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const Board = ({ pieces, setPieces, showCoords}: BoardProps) => {
 
-  const [size] = useState<number>(15);
-  const [fields] = useState<undefined[]>(new Array(size*size).fill(''));
+  const { size } = useAppSelector(selectSettings);
+  const [fields] = useState<null[]>(new Array(size*size).fill(''));
 
   return (
     <div 
@@ -20,7 +22,7 @@ export const Board = ({ pieces, setPieces, showCoords}: BoardProps) => {
               gridTemplateRows: `repeat(${size}, 1fr)`}}>
       {fields.map((f, i) => {
         let coords = {x: (i+1) % size || size, y: Math.ceil((i + 1)/size)}
-        return <Field pieces={pieces} setPieces={setPieces} coords={coords} showCoords={showCoords}/>
+        return <Field coords={coords} showCoords={showCoords} pieces={pieces} setPieces={setPieces} />
       })}
     </div>
   )

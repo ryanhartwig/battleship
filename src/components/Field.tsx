@@ -1,16 +1,20 @@
-import { useCallback, useState } from "react";
+import React, { useCallback, useState } from "react";
 import './Field.css';
 import { characters } from '../utility/data';
+import { selectSettings, setStartPieces } from "../store-state/settings/settingsSlice";
+import { useDispatch } from "react-redux";
+import { useAppSelector } from "../app/hooks";
 
 interface FieldProps {
-  pieces: number;
-  setPieces: React.Dispatch<React.SetStateAction<number>>;
   coords: { x: number, y: number };
   showCoords: boolean;
+  pieces: number;
+  setPieces: React.Dispatch<React.SetStateAction<number>>;
 }
 
 export const Field = ({pieces, setPieces, coords, showCoords}: FieldProps) => {
-
+  
+  
   const [clicked, setClicked] = useState<boolean>(false);
 
   const handleClick = useCallback((e: any) => {
@@ -25,7 +29,7 @@ export const Field = ({pieces, setPieces, coords, showCoords}: FieldProps) => {
   return (
     <>
       <div className={`field ${clicked ? 'clicked' : ''}`} onMouseDown={handleClick} onMouseOver={handleClick}>
-        {showCoords ? <p className="coord">{characters[coords.x]}{coords.y}</p>
+        {showCoords ? <p className="coord">{coords.x},{coords.y}</p>
           : clicked ? '🚢' : ''}
       </div>
     </>

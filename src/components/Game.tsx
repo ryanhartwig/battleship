@@ -1,10 +1,14 @@
 import './Game.css';
 import { useCallback, useEffect, useState } from 'react';
 import { Board } from './Board';
+import { useAppSelector } from '../app/hooks';
+import { selectSettings } from '../store-state/settings/settingsSlice';
 
 export const Main = () => {
 
-  const [pieces, setPieces] = useState<number>(10);
+  const { startPieces } = useAppSelector(selectSettings);
+  const [pieces, setPieces] = useState(startPieces);
+
   const [showCoords, setShowCoords] = useState<boolean>(false);
 
   const hoverCoords = useCallback(() => {
@@ -14,7 +18,7 @@ export const Main = () => {
   return (
     <div>
       
-      <Board pieces={pieces} setPieces={setPieces} showCoords={showCoords}/>
+      <Board pieces={pieces} showCoords={showCoords} setPieces={setPieces}/>
 
       <div id='gameinfo'>
         <div id='info-box'>

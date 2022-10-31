@@ -9,8 +9,9 @@
   max-height: 700px;
 
   display: grid;
-  
   gap: 1px;
+
+  overflow: scroll;
 }
 
 

@@ -6,6 +6,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+
 }
 
 .field:hover {
@@ -13,8 +14,11 @@
 }
 
 
-/*  */
+/* 
 .clicked::after {
   content: '🚢'
-}
+} */
 
+.coord {
+  font-size: 0.8rem;
+}

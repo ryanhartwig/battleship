@@ -11,7 +11,7 @@ interface SettingsState {
 }
 
 const initialState: SettingsState = {
-  size: 10,
+  size: 15,
   startPieces: 10,
   maxShipLength: 8,
   upgrades: upgradesInitialState,

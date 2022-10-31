@@ -23,9 +23,10 @@ const ShipRender: React.FC<ShipRenderProps> = ({ ship }) => {
     <div
       style={{
         gridArea: `${startRow} / ${startColumn} / ${endRow+1} / ${endColumn+1}`,
-        backgroundColor: 'red',
+        backgroundColor: 'grey',
+        border: '1px solid black',
         borderRadius: '100px',
-        margin: '10px',
+        margin: '15px',
         pointerEvents: 'none'
       }}    
     >
@@ -38,8 +39,8 @@ export const ShipLayer = () => {
   const ships = useAppSelector(s => s.game.ships)
   return (
     <>
-      {ships.map((ship, i) => {
-        return <ShipRender ship={ship} key={i} />
+      {ships.map((ship) => {
+        return <ShipRender ship={ship} key={ship.id} />
       })}
     </>
   );

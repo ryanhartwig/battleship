@@ -17,14 +17,17 @@ export const Field = ({pieces, setPieces, coords, showCoords}: FieldProps) => {
   const {x, y} = coords;
   const [clicked, setClicked] = useState<boolean>(false);
 
+  const placeMode = useAppSelector((state) => state.game.placeMode);
+
   const handleClick = useCallback((e: any) => {
     e.preventDefault();
+    if (!placeMode) return;
     if (e._reactName === 'onMouseOver' && !e.buttons) return;
     if (pieces || (!pieces && clicked === true)) {
       setPieces((p) => clicked ? p + 1 : p - 1);
       setClicked((p) => !p);
     };
-  }, [clicked, pieces, setPieces]);
+  }, [clicked, pieces, setPieces, placeMode]);
 
   return (
     <>

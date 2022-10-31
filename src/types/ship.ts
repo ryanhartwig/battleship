@@ -14,5 +14,6 @@ export interface ShipSegment {
  * Represents a series of segments
  */
 export interface Ship {
+  id: number
   segments: ShipSegment[]
 }

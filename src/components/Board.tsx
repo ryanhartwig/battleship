@@ -22,7 +22,7 @@ export const Board = ({ pieces, setPieces, showCoords}: BoardProps) => {
               gridTemplateRows: `repeat(${size}, 1fr)`}}>
       {fields.map((f, i) => {
         let coords = {x: (i+1) % size || size, y: Math.ceil((i + 1)/size)}
-        return <Field coords={coords} showCoords={showCoords} pieces={pieces} setPieces={setPieces} />
+        return <Field key={`${coords.x}-${coords.y}`} coords={coords} showCoords={showCoords} pieces={pieces} setPieces={setPieces} />
       })}
     </div>
   )

@@ -26,15 +26,25 @@ interface GameState {
    * down new segments or not.
    */
   placeMode: boolean;
-  movementLevel: number;
+  levels: {
+    movement: number;
+    pillage: number;
+    ship: number;
+    range: number;
+  };
 }
 
 const initialState: GameState = {
-  cash: 0,
+  cash: 5000,
   segments: 10,
   ships: [],
   placeMode: false,
-  movementLevel: 0,
+  levels: {
+    movement: 0,
+    pillage: 0,
+    ship: 0,
+    range: 0,
+  },
 };
 
 const gameReducer = createSlice({
@@ -63,7 +73,6 @@ const gameReducer = createSlice({
       state.segments -= state.temporaryShip.segments.length;
       state.ships.push(state.temporaryShip);
       state.temporaryShip = undefined;
-      state.placeMode = false;
     },
   },
 });

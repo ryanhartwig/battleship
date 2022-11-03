@@ -1,0 +1,12 @@
+.upgrade-wrapper {
+  width: 100%;
+  padding: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.upgrades {
+  flex-basis: 45vw;
+  margin-top: 16px;
+}

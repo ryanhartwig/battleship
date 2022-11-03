@@ -9,6 +9,7 @@ const isField = (e: any) => {
 
 export const useEditShip = () => {
   const placing = useAppSelector((state) => state.game.placeMode);
+  const tempShip = useAppSelector((state) => state.game.temporaryShip);
   const placingRef = useRef(placing);
   const remainingSegments = useAppSelector((state) => state.game.segments);
   const startCoordsRef = useRef<string | undefined>();
@@ -18,9 +19,16 @@ export const useEditShip = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    placingRef.current = placing;
+    if (tempShip) {
+      return;
+    }
+
     startCoordsRef.current = undefined;
     setEndCoords(undefined);
+  }, [tempShip]);
+
+  useEffect(() => {
+    placingRef.current = placing;
   }, [placing]);
 
   const ships = useAppSelector((state) => state.game.ships);
@@ -68,7 +76,7 @@ export const useEditShip = () => {
       }
 
       if (Math.max(xRange, yRange) < 2) {
-        return [true, 'Ship must be a minimum length of 2'];
+        return [true, 'Ship must be a minimum length of 3'];
       }
 
       if (segments.some((segment) => segmentsHash.has(`${segment.x}-${segment.y}`))) {

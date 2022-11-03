@@ -11,7 +11,7 @@ interface FieldProps {
 export const Field = ({ coords }: FieldProps) => {
   const { x, y } = coords;
   const size = useAppSelector((s) => s.settings.size);
-  const movementLevel = useAppSelector((s) => s.game.movementLevel);
+  const movementLevel = useAppSelector((s) => s.game.levels.movement);
   const disabled = useMemo(() => {
     const range = movementLevel + size;
     return x > range || y > range;

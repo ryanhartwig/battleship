@@ -15,6 +15,10 @@
   animation: 1s infinite alternate-reverse inout;
 }
 
+.resources {
+  padding: 6px 26px 0 26px;
+}
+
 @keyframes inout {
   from {
     box-shadow: #00cc0088 0 0 3px 2px;

@@ -1,16 +1,18 @@
 .main {
   width: 100vw;
-}
+  height: 100vh;
 
-#gameinfo {
-  width: 100%;
-  border-bottom: 1px solid black;
-}
-
-#info-box {
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-direction: column;
+}
+
+div.main-content {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.05);
+  margin-top: 6px;
+  padding-bottom: 64px;
 }
 
 #info-box > * {

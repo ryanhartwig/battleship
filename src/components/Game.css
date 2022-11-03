@@ -1,8 +1,9 @@
+.main {
+  width: 100vw;
+}
+
 #gameinfo {
-  /* position: absolute; */
-  top: 0;
   width: 100%;
-  position: absolute;
   border-bottom: 1px solid black;
 }
 
@@ -29,7 +30,6 @@
 }
 
 .add {
-  /* height: 0px; */
   width: 0px;
   overflow: hidden;
   transition: all 0.2s;

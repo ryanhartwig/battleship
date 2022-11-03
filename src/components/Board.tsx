@@ -6,27 +6,33 @@ import { useEditShip } from '../hooks/useEditShip';
 import { Field } from './Field';
 import { ShipItem, ShipLayer } from './ShipLayer';
 import './Board.css';
+import { useBoardSize } from '../hooks/useBoardSize';
 
 export const Board = () => {
+  const sizePx = useBoardSize();
+
   const size = useAppSelector((s) => s.settings.size + s.settings.upgrades.move.length - 1);
   const fields = useMemo(() => new Array(size * size).fill(''), [size]);
 
   const placeMode = useAppSelector((state) => state.game.placeMode);
 
-  const { onMouseDown, onMouseOver, onExit, temporaryShip } = useEditShip();
+  const { onMouseDown, onMouseMove, onMouseUp, onTouchMove, onTouchStart, temporaryShip } = useEditShip();
 
   return (
     <div
       id="board"
       className={clsx({ placing: placeMode })}
-      onMouseOver={onMouseOver}
+      onMouseMove={onMouseMove}
       onMouseDown={onMouseDown}
-      onMouseUp={onExit}
-      onMouseLeave={onExit}
+      onMouseUp={onMouseUp}
+      onTouchMove={onTouchMove}
+      onTouchStart={onTouchStart}
       style={{
         gridTemplateColumns: `repeat(${size}, 1fr)`,
         gridTemplateRows: `repeat(${size}, 1fr)`,
         overflow: 'visible',
+        width: `${sizePx}px`,
+        height: `${sizePx}px`,
       }}
     >
       {fields.map((f, i) => {

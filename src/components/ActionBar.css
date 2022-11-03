@@ -1,0 +1,15 @@
+.action-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 6px;
+  border-top-right-radius: 6px;
+  border-top-left-radius: 6px;
+  box-shadow: black 0 0 2px 0px;
+  background-color: white;
+}
+
+.info-box {
+  display: flex;
+}

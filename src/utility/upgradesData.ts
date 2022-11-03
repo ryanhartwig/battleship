@@ -1,29 +1,3 @@
-/* 
-
-interface Upgrade {
-  cost: number
-}
-interface PillageUpgrade extends Upgrade {
-  earningsPerSegment: number,
-  segmentRewardOnSink: number,
-}
-interface ShipUpgrade extends Upgrade {
-  segmentCost: number,
-}
-interface MoveUpgrade extends Upgrade {
-  extraColumnRow: number,
-}
-interface RangeUpgrade extends Upgrade {
-  attackRange: number,
-}
-export interface Upgrades {
-  pillage: PillageUpgrade[];
-  ship: ShipUpgrade[];
-  move: MoveUpgrade[];
-  range: RangeUpgrade[];
-}
-*/
-
 import type { Upgrades } from '../types/upgrades';
 
 export const upgradesInitialState: Upgrades = {

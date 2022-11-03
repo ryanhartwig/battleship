@@ -1,34 +1,29 @@
 interface Buyable {
-  cost: number
+  cost: number;
 }
 
 interface RangedMissile extends Buyable {
-  type: 'ranged'
-  distance: number
+  type: 'ranged';
+  distance: number;
 }
 
 interface LongRangedMissile extends Buyable {
-  type: 'longranged'
+  type: 'longranged';
 }
 
 interface Bomb extends Buyable {
-  type: 'bomb'
-  size: number
+  type: 'bomb';
+  size: number;
 }
 
 interface DirectionalBomb extends Buyable {
-  type: 'directional'
-  length: number
+  type: 'directional';
+  length: number;
 }
 
 interface AtomicBomb extends Buyable {
-  type: 'atomic'
-  size: number
+  type: 'atomic';
+  size: number;
 }
 
-export type Item =
-  RangedMissile |
-  LongRangedMissile |
-  Bomb |
-  DirectionalBomb |
-  AtomicBomb
+export type Item = RangedMissile | LongRangedMissile | Bomb | DirectionalBomb | AtomicBomb;

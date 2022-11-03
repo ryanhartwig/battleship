@@ -1,13 +1,13 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
-import { Upgrades } from "../../types/upgrades";
-import { upgradesInitialState } from "../../utility/upgradesData";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '../../app/store';
+import { Upgrades } from '../../types/upgrades';
+import { upgradesInitialState } from '../../utility/upgradesData';
 
 interface SettingsState {
   size: number;
   startPieces: number;
   maxShipLength: number;
-  upgrades: Upgrades
+  upgrades: Upgrades;
 }
 
 const initialState: SettingsState = {
@@ -15,7 +15,7 @@ const initialState: SettingsState = {
   startPieces: 10,
   maxShipLength: 8,
   upgrades: upgradesInitialState,
-}
+};
 
 const settingsReducer = createSlice({
   name: 'settings',
@@ -24,7 +24,7 @@ const settingsReducer = createSlice({
     setStartPieces: (state, action: PayloadAction<number>) => {
       state.startPieces = action.payload;
     },
-  }
+  },
 });
 
 export const selectSettings = (state: RootState) => state.settings;

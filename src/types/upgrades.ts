@@ -2,35 +2,34 @@ interface Upgrade {
   /**
    * Cost of the upgrade
    */
-  cost: number
+  cost: number;
 }
 
 interface PillageUpgrade extends Upgrade {
   /**
    * Cash gained per segment hit
    */
-  earningsPerSegment: number,
+  earningsPerSegment: number;
   /**
    * Segments gained when sinking an enemy ship
    */
-  segmentRewardOnSink: number,
+  segmentRewardOnSink: number;
 }
 
 interface ShipUpgrade extends Upgrade {
   /**
    * Cost of purchasing new ship segment
    */
-  segmentCost: number,
+  segmentCost: number;
 }
 
-interface MoveUpgrade extends Upgrade {
-}
+interface MoveUpgrade extends Upgrade {}
 
 interface RangeUpgrade extends Upgrade {
   /**
    * Current attack range for each ship
    */
-  attackRange: number,
+  attackRange: number;
 }
 
 export interface Upgrades {

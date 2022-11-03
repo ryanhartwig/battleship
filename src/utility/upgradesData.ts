@@ -24,8 +24,7 @@ export interface Upgrades {
 }
 */
 
-
-import type { Upgrades } from "../types/upgrades"
+import type { Upgrades } from '../types/upgrades';
 
 export const upgradesInitialState: Upgrades = {
   pillage: [
@@ -39,11 +38,11 @@ export const upgradesInitialState: Upgrades = {
     [20, 10, 3],
     [20, 11, 3],
     [30, 12, 3],
-    [40, 15, 4]
+    [40, 15, 4],
   ].map(([cost, earningsPerSegment, segmentRewardOnSink]) => ({
     cost,
     earningsPerSegment,
-    segmentRewardOnSink
+    segmentRewardOnSink,
   })),
   ship: [
     [0, 10],
@@ -56,16 +55,14 @@ export const upgradesInitialState: Upgrades = {
     [30, 3],
     [40, 2],
     [50, 1],
-    [80, 0]
+    [80, 0],
   ].map(([cost, segmentCost]) => ({ cost, segmentCost })),
-  move: [
-    0, 20, 30, 40, 50, 60
-  ].map((cost) => ({ cost })),
+  move: [0, 20, 30, 40, 50, 60].map((cost) => ({ cost })),
   range: [
     [0, 1],
     [100, 2],
     [100, 3],
     [100, 4],
-    [100, Infinity]
-  ].map(([cost, attackRange]) => ({cost, attackRange})),
-}
+    [100, Infinity],
+  ].map(([cost, attackRange]) => ({ cost, attackRange })),
+};

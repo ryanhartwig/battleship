@@ -1,5 +1,5 @@
 .ship {
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   border: 1px solid black;
   border-radius: 100px;
   margin: 15px;
@@ -12,7 +12,7 @@
 }
 
 .ship-selected {
-  background-color: rgba(0,255,0,0.5);
+  background-color: rgba(0, 255, 0, 0.5);
   border: 1px solid green;
 }
 
@@ -22,10 +22,10 @@
 }
 
 .ship-invalid {
-  background-color: rgba(255,0,0,0.4);
+  background-color: rgba(255, 0, 0, 0.4);
   border: 1px solid red;
 }
 
 .ship:hover {
-  background-color: rgba(0,255,0,0.2);
+  background-color: rgba(0, 255, 0, 0.2);
 }

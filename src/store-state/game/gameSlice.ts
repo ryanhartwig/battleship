@@ -46,6 +46,8 @@ const gameReducer = createSlice({
   reducers: {
     togglePlaceMode: (state) => {
       state.placeMode = !state.placeMode;
+      delete state.temporaryShip;
+      delete state.editingShip;
     },
     addShip: (state, action: PayloadAction<Ship>) => {
       state.ships.push(action.payload);

@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux';
 import { saveTemporaryShip, togglePlaceMode } from '../store-state/game/gameSlice';
 import clsx from 'clsx';
 
-export const Main = () => {
+export const Game = () => {
   const dispatch = useDispatch();
 
   const placeMode = useAppSelector((state) => state.game.placeMode);
@@ -24,7 +24,10 @@ export const Main = () => {
   }, [dispatch]);
 
   return (
-    <div>
+    <div className="main">
+      {/* Game board */}
+      <Board />
+
       {/* Header buttons */}
       <div id="gameinfo">
         <div id="info-box">
@@ -36,9 +39,6 @@ export const Main = () => {
           </Label>
         </div>
       </div>
-
-      {/* Game board */}
-      <Board />
 
       {temporaryShip?.invalidReason && (
         <Container>

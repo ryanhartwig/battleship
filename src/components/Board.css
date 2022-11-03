@@ -1,18 +1,14 @@
 /* Board (grid wrapper) */
 #board {
-  margin: 100px auto;
+  margin: 32px auto 0 auto;
   border-top: 1px solid black;
   border-left: 1px solid black;
-
-  width: 700px;
-  height: 700px;
-  max-width: 700px;
-  max-height: 700px;
 
   display: grid;
   overflow: auto;
 
   user-select: none;
+  touch-action: none;
 }
 
 #board.placing {
@@ -21,10 +17,10 @@
 
 @keyframes inout {
   from {
-    box-shadow: #e8b211 0 0 3px 2px;
+    box-shadow: #00cc0088 0 0 3px 2px;
   }
 
   to {
-    box-shadow: #e8b211 0 0 9px 6px;
+    box-shadow: #00cc0088 0 0 9px 6px;
   }
 }

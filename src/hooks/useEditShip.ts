@@ -1,17 +1,27 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { setTemporaryShip } from '../store-state/game/gameSlice';
-import { Ship } from '../types/ship';
+import { Ship, ShipSegment } from '../types/ship';
+
+const isField = (e: any) => {
+  return e.target.className.includes('field');
+};
 
 export const useEditShip = () => {
   const placing = useAppSelector((state) => state.game.placeMode);
+  const placingRef = useRef(placing);
   const remainingSegments = useAppSelector((state) => state.game.segments);
-  const startCoordsRef = useRef<number[]>([]);
-  const endCoordsRef = useRef<number[]>([]);
-  const [workingCoords, setWorkingCoords] = useState<[number, number][]>([]);
-  const [dragging, setDragging] = useState<boolean>(false);
+  const startCoordsRef = useRef<string | undefined>();
+  const [endCoords, setEndCoords] = useState<string | undefined>();
+  const draggingRef = useRef<boolean>(false);
   const maxLength = useAppSelector((state) => state.settings.maxShipLength) - 1;
   const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    placingRef.current = placing;
+    startCoordsRef.current = undefined;
+    setEndCoords(undefined);
+  }, [placing]);
 
   const ships = useAppSelector((state) => state.game.ships);
 
@@ -25,62 +35,33 @@ export const useEditShip = () => {
     return result;
   }, [ships]);
 
-  useEffect(() => {
-    setWorkingCoords([]);
-  }, [placing]);
-
-  const onMouseOver = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      const field = e.target as HTMLDivElement;
-      if (!dragging || !placing || !field.className.includes('field')) {
-        return;
-      }
-
-      const [x, y] = field.id.split('-').map((n: any) => Number(n));
-      endCoordsRef.current = [x, y];
-
-      let [x1, y1] = startCoordsRef.current;
-      let [x2, y2] = endCoordsRef.current;
-
-      let xRange = Math.max(x1, x2) - Math.min(x1, x2);
-      let yRange = Math.max(y1, y2) - Math.min(y1, y2);
-
-      if (xRange > yRange) {
-        setWorkingCoords([
-          [x1, y1],
-          [x2, y1],
-        ]);
-      } else {
-        setWorkingCoords([
-          [x1, y1],
-          [x1, y2],
-        ]);
-      }
-    },
-    [dragging, placing]
-  );
-
   const temporaryShip = useMemo((): Ship | undefined => {
-    if (!workingCoords.length) return;
-    let [[x1, y1], [x2, y2]] = workingCoords;
-    let xRange = Math.max(x1, x2) - Math.min(x1, x2);
-    let yRange = Math.max(y1, y2) - Math.min(y1, y2);
-
-    let segments = [
-      { x: x1, y: y1, originalCost: 10 },
-      { x: x2, y: y2, originalCost: 10 },
-    ];
-
-    // Cursed fill solution
-    let fill = [];
-    let [z1, z2] = x1 === x2 ? [y1, y2] : [x1, x2];
-    for (; z1 !== z2; z2 > z1 ? z1++ : z1--) {
-      if ((x1 === x2 && z1 === y1) || (y1 === y2 && z1 === x1)) continue;
-      const [x, y] = x1 === x2 ? [x1, z1] : [z1, y1];
-      fill.push({ x, y, originalCost: 10 });
+    if (!startCoordsRef.current || !endCoords) {
+      return;
     }
-    segments.splice(1, 0, ...fill);
-    // segmentsHash
+
+    const [startX, startY] = startCoordsRef.current.split('-').map((n) => Number(n));
+    const [endX, endY] = endCoords.split('-').map((n) => Number(n));
+    const xRange = Math.abs(Math.max(startX, endX) - Math.min(startX, endX));
+    const yRange = Math.abs(Math.max(startY, endY) - Math.min(startY, endY));
+    let segments: ShipSegment[] = [];
+    if (xRange > yRange) {
+      for (let x = Math.min(startX, endX); x < Math.max(startX, endX) + 1; x++) {
+        segments.push({
+          originalCost: 10,
+          x,
+          y: startY,
+        });
+      }
+    } else {
+      for (let y = Math.min(startY, endY); y < Math.max(startY, endY) + 1; y++) {
+        segments.push({
+          originalCost: 10,
+          x: startX,
+          y,
+        });
+      }
+    }
     let [invalid, invalidReason] = ((): [boolean, string?] => {
       if (Math.max(xRange, yRange) > maxLength) {
         return [true, `Ship is longer than max length of ${maxLength + 1}`];
@@ -100,44 +81,101 @@ export const useEditShip = () => {
 
       return [false];
     })();
+
     return {
       id: Date.now(),
       invalid,
       invalidReason,
       segments,
     };
-  }, [workingCoords, maxLength, segmentsHash, remainingSegments]);
+  }, [endCoords, maxLength, segmentsHash, remainingSegments]);
 
   useEffect(() => {
     dispatch(setTemporaryShip(temporaryShip));
   }, [temporaryShip, dispatch]);
 
-  const onMouseDown = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+  //////////////////////////
+  //////////////////////////
+  //////   HANDLERS  ///////
+  //////////////////////////
+  //////////////////////////
+  const onStart = useCallback((coords: string) => {
+    startCoordsRef.current = coords;
+    draggingRef.current = true;
+    setEndCoords(coords);
+  }, []);
+
+  const onMove = useCallback((coords: string) => {
+    setEndCoords(coords);
+  }, []);
+
+  const onEnd = useCallback(() => {
+    draggingRef.current = false;
+  }, []);
+
+  const onTouchStart = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
       const field = e.target as HTMLDivElement;
-      if (!placing || !field.className.includes('field')) {
+      if (!placingRef.current || !isField(e)) {
         return;
       }
-      const [x, y] = field.id.split('-').map((n: string) => Number(n));
-      startCoordsRef.current = [x, y];
-      setDragging(true);
+      onStart(field.id);
     },
-    [placing]
+    [onStart]
   );
 
-  const onExit = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-      console.log('onexit');
-      if (!placing) return;
-      setDragging(false);
+  const onTouchMove = useCallback(
+    (e: React.TouchEvent<HTMLDivElement>) => {
+      const field = document.elementFromPoint(e.changedTouches[0].clientX, e.changedTouches[0].clientY)!;
+      if (!placingRef.current || !startCoordsRef.current || !isField(e)) {
+        return;
+      }
+      onMove(field.id);
     },
-    [placing]
+    [onMove]
+  );
+
+  const onMouseDown = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const field = e.target as HTMLDivElement;
+      if (!placingRef.current || !isField(e)) {
+        return;
+      }
+      e.preventDefault();
+      onStart(field.id);
+    },
+    [onStart]
+  );
+
+  const onMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      const field = e.target as HTMLDivElement;
+      if (!placingRef.current || !draggingRef.current || !startCoordsRef.current || !isField(e)) {
+        return;
+      }
+      e.preventDefault();
+      onMove(field.id);
+    },
+    [onMove]
+  );
+
+  const onMouseUp = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!placingRef.current || !isField(e)) {
+        return;
+      }
+      e.preventDefault();
+      onEnd();
+    },
+    [onEnd]
   );
 
   return {
     onMouseDown,
-    onMouseOver,
-    onExit,
+    onMouseMove,
+    onMouseUp,
+    onTouchStart,
+    onTouchMove,
     temporaryShip,
   };
 };

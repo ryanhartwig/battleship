@@ -27,3 +27,16 @@
 #info-box > button:hover {
   border-color: black;
 }
+
+.add {
+  /* height: 0px; */
+  width: 0px;
+  overflow: hidden;
+  transition: all 0.2s;
+  margin: 0 auto;
+}
+
+.add-valid {
+  width: fit-content;
+  height: fit-content;
+}

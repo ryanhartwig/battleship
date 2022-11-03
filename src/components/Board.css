@@ -14,5 +14,15 @@
 }
 
 #board.placing {
-  box-shadow: #e8b211 0 0 5px 2px;
+  animation: 1s infinite alternate-reverse inout;
+}
+
+@keyframes inout {
+  from {
+    box-shadow: #e8b211 0 0 3px 2px;
+  }
+
+  to {
+    box-shadow: #e8b211 0 0 9px 6px;
+  }
 }

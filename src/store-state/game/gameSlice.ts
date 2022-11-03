@@ -1,7 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Ship } from '../../types/ship';
-
-
 interface GameState {
   /**
    * Stores the amount of available cash
@@ -14,20 +12,18 @@ interface GameState {
   /**
    * An array of ships
    */
-  ships: Ship[]
+  ships: Ship[];
   /**
    * The ID of the ship you are adding segments to
    */
-  editingShip?: number
+  editingShip?: number;
   /**
    * Whether or not clicking squares means you are placing
    * down new segments or not.
    */
-  placeMode: boolean
-  movementLevel: number
+  placeMode: boolean;
+  movementLevel: number;
 }
-
-
 
 const initialState: GameState = {
   cash: 0,
@@ -59,6 +55,7 @@ const gameReducer = createSlice({
 
 export const {
   togglePlaceMode,
+  addShip,
   selectShip,
 } = gameReducer.actions;
 

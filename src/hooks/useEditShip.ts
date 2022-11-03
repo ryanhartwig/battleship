@@ -11,21 +11,30 @@ export const useEditShip = () => {
   const [dragging, setDragging] = useState<boolean>(false);
   const maxLength = useAppSelector((state) => state.settings.maxShipLength) -1;
 
+  const ships = useAppSelector((state) => state.game.ships);
+
+  const segmentsHash = useMemo(() => {
+    const result = new Set();
+    ships.forEach((ship) => {
+      ship.segments.forEach((segment) => {
+        result.add(`${segment.x}-${segment.y}`);
+      })
+    });
+    return result;
+  }, [ships])
+
   useEffect(() => {
     setWorkingCoords([])
   }, [placing])
 
   const onMouseOver = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const field = e.target as HTMLDivElement
-    if (!placing || !field.className.includes('field')) {
+    if (!dragging || !placing || !field.className.includes('field')) {
       return;
     }
+
     const [x, y] = field.id.split('-').map((n: any) => Number(n))
     endCoordsRef.current = [x, y];
-
-    if (!dragging) {
-      return;
-    }
 
     let [x1, y1] = startCoordsRef.current;
     let [x2, y2] = endCoordsRef.current;
@@ -38,29 +47,50 @@ export const useEditShip = () => {
     } else {
       setWorkingCoords([[x1, y1], [x1, y2]]);
     }
-  }, [dragging, workingCoords, placing]);
+  }, [dragging, placing]);
 
   const temporaryShip = useMemo((): Ship | undefined => {
     if (!workingCoords.length) return;
     let [[x1, y1], [x2, y2]] = workingCoords;
     let xRange = Math.max(x1, x2) - Math.min(x1, x2);
     let yRange = Math.max(y1, y2) - Math.min(y1, y2);
+
+    let segments = [{ x: x1, y: y1, originalCost: 10 }, { x: x2, y: y2, originalCost: 10 }];
+
+    // Cursed fill solution
+    let fill = [];
+    let [z1, z2] = (x1 === x2) ? [y1, y2] : [x1, x2];
+    for (; z1 !== z2 ; (z2 > z1) ? z1++ : z1--) {
+      if ((x1 === x2 && z1 === y1) || (y1 === y2 && z1 === x1)) continue;
+      const [x, y] = (x1 === x2) ? [x1, z1] : [z1, y1];
+      fill.push({ x, y, originalCost: 10});
+    }
+    segments.splice(1, 0, ...fill);
+    // segmentsHash
+    let invalid = (xRange > maxLength || yRange > maxLength) ||
+      Math.max(xRange, yRange) < 2 || 
+      segments.some((segment) => {
+        return segmentsHash.has(`${segment.x}-${segment.y}`);
+      });
     return {
       id: Date.now(),
-      invalid: (xRange > maxLength || yRange > maxLength) || Math.max(xRange, yRange) < 2,
-      segments: [{ x: x1, y: y1, originalCost: 10 }, { x: x2, y: y2, originalCost: 10 }] 
+      invalid,
+      segments, 
     }
-  }, [workingCoords])
+  }, [workingCoords, maxLength])
 
   const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (!placing) return;
-    // e.preventDefault();
-    const [x, y] = (e.target as HTMLDivElement).id.split('-').map((n: string) => Number(n));
+    const field = e.target as HTMLDivElement
+    if (!placing || !field.className.includes('field')) {
+      return;
+    }
+    const [x, y] = field.id.split('-').map((n: string) => Number(n));
     startCoordsRef.current = [x, y];
     setDragging(true);
   }, [placing]);
 
   const onExit = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    console.log('onexit');
     if (!placing) return;
     setDragging(false);
   }, [placing]);

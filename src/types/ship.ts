@@ -16,5 +16,6 @@ export interface ShipSegment {
 export interface Ship {
   id: number
   invalid?: boolean
+  invalidReason?: string
   segments: ShipSegment[]
 }

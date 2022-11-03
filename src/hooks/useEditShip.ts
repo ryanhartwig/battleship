@@ -1,15 +1,18 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { useAppSelector } from "../app/hooks";
+import { useAppDispatch, useAppSelector } from "../app/hooks";
+import { setTemporaryShip } from "../store-state/game/gameSlice";
 import { Ship } from "../types/ship";
 
 export const useEditShip = () => {
   
   const placing = useAppSelector((state) => state.game.placeMode);
+  const remainingSegments = useAppSelector((state) => state.game.segments);
   const startCoordsRef = useRef<number[]>([]);
   const endCoordsRef = useRef<number[]>([]);
   const [workingCoords, setWorkingCoords] = useState<[number, number][]>([]);
   const [dragging, setDragging] = useState<boolean>(false);
-  const maxLength = useAppSelector((state) => state.settings.maxShipLength) -1;
+  const maxLength = useAppSelector((state) => state.settings.maxShipLength) - 1;
+  const dispatch = useAppDispatch();
 
   const ships = useAppSelector((state) => state.game.ships);
 
@@ -67,17 +70,36 @@ export const useEditShip = () => {
     }
     segments.splice(1, 0, ...fill);
     // segmentsHash
-    let invalid = (xRange > maxLength || yRange > maxLength) ||
-      Math.max(xRange, yRange) < 2 || 
-      segments.some((segment) => {
-        return segmentsHash.has(`${segment.x}-${segment.y}`);
-      });
+    let [invalid, invalidReason] = ((): [boolean, string?] => {
+      if (Math.max(xRange, yRange) > maxLength) {
+        return [true, `Ship is longer than max length of ${maxLength + 1}`];
+      }
+
+      if (Math.max(xRange, yRange) < 2) {
+        return [true, 'Ship must be a minimum length of 2'];
+      }
+
+      if (segments.some((segment) => segmentsHash.has(`${segment.x}-${segment.y}`))) {
+        return [true, 'Ship must not intercept any other ships'];
+      }
+
+      if (segments.length > remainingSegments) {
+        return [true, 'You do not have enough segments. Please purchase more!']
+      }
+
+      return [false]
+    })();
     return {
       id: Date.now(),
       invalid,
+      invalidReason,
       segments, 
     }
-  }, [workingCoords, maxLength])
+  }, [workingCoords, maxLength, segmentsHash, remainingSegments])
+
+  useEffect(() => {
+    dispatch(setTemporaryShip(temporaryShip))
+  }, [temporaryShip, dispatch])
 
   const onMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const field = e.target as HTMLDivElement

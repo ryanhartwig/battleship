@@ -18,6 +18,10 @@ interface GameState {
    */
   editingShip?: number;
   /**
+   * The temporary ship in memory before being built
+   */
+  temporaryShip?: Ship;
+  /**
    * Whether or not clicking squares means you are placing
    * down new segments or not.
    */
@@ -49,6 +53,18 @@ const gameReducer = createSlice({
     },
     selectShip: (state, action: PayloadAction<number>) => {
       state.editingShip = action.payload
+    },
+    setTemporaryShip: (state, action: PayloadAction<Ship | undefined>) => {
+      state.temporaryShip = action.payload
+    },
+    saveTemporaryShip: (state, action: PayloadAction) => {
+      if (!state.temporaryShip) {
+        return;
+      }
+      state.segments -= state.temporaryShip.segments.length;
+      state.ships.push(state.temporaryShip);
+      state.temporaryShip = undefined;
+      state.placeMode = false;
     }
   },
 });
@@ -57,6 +73,8 @@ export const {
   togglePlaceMode,
   addShip,
   selectShip,
+  setTemporaryShip,
+  saveTemporaryShip,
 } = gameReducer.actions;
 
 export default gameReducer.reducer

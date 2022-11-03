@@ -1,11 +1,10 @@
 import './Game.css';
-import { Button, Label } from 'semantic-ui-react'
-import { useCallback, useState } from 'react';
+import { Button, Container, Label, Message } from 'semantic-ui-react'
+import { useCallback } from 'react';
 import { Board } from './Board';
 import { useAppSelector } from '../app/hooks';
 import { useDispatch } from 'react-redux';
-import { togglePlaceMode } from '../store-state/game/gameSlice';
-import { Ship } from '../types/ship';
+import { saveTemporaryShip, togglePlaceMode } from '../store-state/game/gameSlice';
 import clsx from 'clsx';
 
 export const Main = () => {
@@ -14,16 +13,14 @@ export const Main = () => {
   const placeMode = useAppSelector((state) => state.game.placeMode)
   const segments = useAppSelector((state) => state.game.segments)
   const cash = useAppSelector((state) => state.game.cash)
-
-  const [showCoords, setShowCoords] = useState<boolean>(false);
-  const [temporaryShip, setTemporaryShip] = useState<Ship | undefined>();
-
-  const hoverCoords = useCallback(() => {
-    setShowCoords((p) => !p);
-  }, [])
+  const temporaryShip = useAppSelector((state) => state.game.temporaryShip)
 
   const placeSegments = useCallback(() => {
     dispatch(togglePlaceMode());
+  }, [dispatch])
+
+  const onSaveShip = useCallback(() => {
+    dispatch(saveTemporaryShip());
   }, [dispatch])
 
   return (
@@ -31,18 +28,23 @@ export const Main = () => {
       {/* Header buttons */}
       <div id='gameinfo'>
         <div id='info-box'>
-          <Button color={placeMode ? 'green' : undefined} onClick={placeSegments}>Place Segments ({ segments } remaining)</Button>
-          <Button onMouseOver={hoverCoords} onMouseOut={hoverCoords}>Show Coords</Button>
+          <Button color={placeMode ? 'green' : undefined} onClick={placeSegments}>Place Segments ({ segments - (temporaryShip?.segments.length || 0) } remaining)</Button>
           <Label color="green" readOnly>Cash: ${cash.toFixed(2)}</Label>
         </div>
-      </div> 
+      </div>
 
       {/* Game board */}
-      <Board showCoords={showCoords} setTemporaryShip={setTemporaryShip} />
+      <Board />
+
+      {temporaryShip?.invalidReason && (
+        <Container>
+          <Message error>{temporaryShip.invalidReason}</Message>
+        </Container>
+      )}
 
       {/* Add ship */}
       <div className={clsx('add', {'add-valid': temporaryShip && !temporaryShip.invalid})}>
-        <Button>
+        <Button onClick={onSaveShip}>
           { placeMode && 
             (temporaryShip && !temporaryShip.invalid) ? `Add ship ( - ${temporaryShip?.segments.length} segments )`
             : `invalid`}

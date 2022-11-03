@@ -11,6 +11,8 @@
 
   display: grid;
   overflow: auto;
+
+  user-select: none;
 }
 
 #board.placing {

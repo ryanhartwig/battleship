@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Header, Menu } from 'semantic-ui-react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { buyUpgrade, UpgradeLevel } from '../store-state/game/gameSlice';
+import { buyUpgrade, UpgradeLevel } from '../reducers/game/gameSlice';
 import './Upgrades.css';
 
 export const Upgrades = () => {

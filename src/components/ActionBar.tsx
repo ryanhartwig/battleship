@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { Button } from 'semantic-ui-react';
 import './ActionBar.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { saveTemporaryShip, togglePlaceMode } from '../store-state/game/gameSlice';
+import { saveTemporaryShip, togglePlaceMode } from '../reducers/game/gameSlice';
 
 export const ActionBar = () => {
   const dispatch = useAppDispatch();

@@ -3,7 +3,7 @@ import { RootState } from '../../app/store';
 import { Upgrades } from '../../types/upgrades';
 import { upgradesInitialState } from '../../utility/upgradesData';
 
-interface SettingsState {
+export interface SettingsState {
   size: number;
   startPieces: number;
   maxShipLength: number;

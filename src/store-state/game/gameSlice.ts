@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Ship } from '../../types/ship';
+import { Upgrade } from '../../types/upgrades';
+import { c } from '../../utility/c';
+import { SettingsState } from '../settings/settingsSlice';
+
+export type UpgradeLevel = 'movement' | 'pillage' | 'ship' | 'range';
+
 interface GameState {
   /**
    * Stores the amount of available cash
@@ -26,12 +32,7 @@ interface GameState {
    * down new segments or not.
    */
   placeMode: boolean;
-  levels: {
-    movement: number;
-    pillage: number;
-    ship: number;
-    range: number;
-  };
+  levels: Record<UpgradeLevel, number>;
 }
 
 const initialState: GameState = {
@@ -74,9 +75,46 @@ const gameReducer = createSlice({
       state.ships.push(state.temporaryShip);
       state.temporaryShip = undefined;
     },
+    buyUpgrade: (state, action: PayloadAction<[UpgradeLevel, SettingsState]>) => {
+      const [upgrade, settings] = action.payload;
+      let upgrades: Upgrade[];
+      let level: number;
+
+      switch (upgrade) {
+        case 'movement':
+          upgrades = settings.upgrades.move;
+          level = state.levels.movement;
+          break;
+        case 'pillage':
+          upgrades = settings.upgrades.pillage;
+          level = state.levels.pillage;
+          break;
+        case 'range':
+          upgrades = settings.upgrades.range;
+          level = state.levels.range;
+          break;
+        case 'ship':
+          upgrades = settings.upgrades.ship;
+          level = state.levels.ship;
+          break;
+        default:
+          throw new Error(`${action.payload} not implemented`);
+      }
+
+      if (!upgrades[level + 1]) {
+        throw new Error(`No next level for ${action.payload}`);
+      }
+
+      if (state.cash < upgrades[level + 1].cost) {
+        throw new Error('You can not afford this upgrade.');
+      }
+
+      state.cash = c(state.cash - upgrades[level + 1].cost);
+      state.levels[upgrade] += 1;
+    },
   },
 });
 
-export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip } = gameReducer.actions;
+export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyUpgrade } = gameReducer.actions;
 
 export default gameReducer.reducer;

@@ -10,6 +10,7 @@ const isField = (e: any) => {
 export const useEditShip = () => {
   const placing = useAppSelector((state) => state.game.placeMode);
   const tempShip = useAppSelector((state) => state.game.temporaryShip);
+  const size = useAppSelector((state) => state.settings.size + state.game.levels.movement);
   const placingRef = useRef(placing);
   const remainingSegments = useAppSelector((state) => state.game.segments);
   const startCoordsRef = useRef<string | undefined>();
@@ -87,6 +88,10 @@ export const useEditShip = () => {
         return [true, 'You do not have enough segments. Please purchase more!'];
       }
 
+      if (segments.some(({ x, y }) => Math.max(x, y) > size)) {
+        return [true, 'You can not build in the grey zone. Upgrade your movement!'];
+      }
+
       return [false];
     })();
 
@@ -96,7 +101,7 @@ export const useEditShip = () => {
       invalidReason,
       segments,
     };
-  }, [endCoords, maxLength, segmentsHash, remainingSegments]);
+  }, [endCoords, maxLength, segmentsHash, remainingSegments, size]);
 
   useEffect(() => {
     dispatch(setTemporaryShip(temporaryShip));

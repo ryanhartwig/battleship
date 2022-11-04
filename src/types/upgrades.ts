@@ -1,4 +1,4 @@
-interface Upgrade {
+export interface Upgrade {
   /**
    * Cost of the upgrade
    */

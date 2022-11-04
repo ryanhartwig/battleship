@@ -3,7 +3,7 @@ import './ShipLayer.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { useCallback, useMemo } from 'react';
 import clsx from 'clsx';
-import { selectShip } from '../store-state/game/gameSlice';
+import { selectShip } from '../reducers/game/gameSlice';
 
 interface ShipItemProps {
   ship: Ship;

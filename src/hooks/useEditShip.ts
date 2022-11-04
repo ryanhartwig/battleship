@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setTemporaryShip } from '../store-state/game/gameSlice';
+import { setTemporaryShip } from '../reducers/game/gameSlice';
 import { Ship, ShipSegment } from '../types/ship';
 
 const isField = (e: any) => {

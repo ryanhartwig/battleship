@@ -15,7 +15,7 @@ export const Board = () => {
   const size = useAppSelector((s) => s.settings.size + s.settings.upgrades.move.length - 1);
   const fields = useMemo(() => new Array(size * size).fill(''), [size]);
   const cash = useAppSelector((s) => s.game.cash);
-  const segments = useAppSelector((s) => s.game.segments);
+  const segments = useAppSelector((s) => s.game.inventory.segment);
 
   const placeMode = useAppSelector((state) => state.game.placeMode);
 

@@ -51,8 +51,8 @@ export const useEditShip = () => {
 
     const [startX, startY] = startCoordsRef.current.split('-').map((n) => Number(n));
     const [endX, endY] = endCoords.split('-').map((n) => Number(n));
-    const xRange = Math.abs(Math.max(startX, endX) - Math.min(startX, endX));
-    const yRange = Math.abs(Math.max(startY, endY) - Math.min(startY, endY));
+    const xRange = Math.abs(startX - endX);
+    const yRange = Math.abs(startY - endY);
     let segments: ShipSegment[] = [];
     if (xRange > yRange) {
       for (let x = Math.min(startX, endX); x < Math.max(startX, endX) + 1; x++) {

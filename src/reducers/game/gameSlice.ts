@@ -1,7 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Item } from '../../types/items';
 import { Ship } from '../../types/ship';
 import { Upgrade } from '../../types/upgrades';
 import { c } from '../../utility/c';
+import { items } from '../../utility/itemsData';
 import { SettingsState } from '../settings/settingsSlice';
 
 export type UpgradeLevel = 'movement' | 'pillage' | 'ship' | 'range';
@@ -33,6 +35,14 @@ interface GameState {
    */
   placeMode: boolean;
   levels: Record<UpgradeLevel, number>;
+  /**
+   * Records any items the player has purchased
+   */
+  inventory: Item[];
+  /**
+   * Records buyable items
+   */
+  store: Item[];
 }
 
 const initialState: GameState = {
@@ -46,6 +56,8 @@ const initialState: GameState = {
     ship: 0,
     range: 0,
   },
+  inventory: [],
+  store: items,
 };
 
 const gameReducer = createSlice({

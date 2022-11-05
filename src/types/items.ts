@@ -2,6 +2,10 @@ interface Buyable {
   cost: number;
 }
 
+interface Segment extends Buyable {
+  type: 'segment';
+}
+
 interface RangedMissile extends Buyable {
   type: 'ranged';
   distance: number;
@@ -26,4 +30,4 @@ interface AtomicBomb extends Buyable {
   size: number;
 }
 
-export type Item = RangedMissile | LongRangedMissile | Bomb | DirectionalBomb | AtomicBomb;
+export type Item = Segment | RangedMissile | LongRangedMissile | Bomb | DirectionalBomb | AtomicBomb;

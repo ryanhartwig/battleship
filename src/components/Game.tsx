@@ -4,11 +4,12 @@ import { useState } from 'react';
 import { Board } from './Board';
 import { ActionBar } from './ActionBar';
 import { Upgrades } from './Upgrades';
+import { Arsenal } from './Arsenal';
 
-type Tab = 'store' | 'upgrades' | 'rules';
+type Tab = 'arsenal' | 'upgrades' | 'rules';
 
 const tabColors: Record<Tab, SemanticCOLORS> = {
-  store: 'blue',
+  arsenal: 'blue',
   upgrades: 'green',
   rules: 'yellow',
 };
@@ -31,11 +32,12 @@ export const Game = () => {
 
       <div className="main-content">
         <Menu inverted widths={3} style={{ borderRadius: 0, marginTop: 0, position: 'sticky', top: 0, zIndex: 1000 }}>
-          <Menu.Item {...createTabProps('store')}>Store</Menu.Item>
+          <Menu.Item {...createTabProps('arsenal')}>Arsenal</Menu.Item>
           <Menu.Item {...createTabProps('upgrades')}>Upgrades</Menu.Item>
           <Menu.Item {...createTabProps('rules')}>Rules</Menu.Item>
         </Menu>
         {tab === 'upgrades' && <Upgrades />}
+        {tab === 'arsenal' && <Arsenal />}
       </div>
 
       <ActionBar />

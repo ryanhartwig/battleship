@@ -12,7 +12,7 @@ export const useEditShip = () => {
   const tempShip = useAppSelector((state) => state.game.temporaryShip);
   const size = useAppSelector((state) => state.settings.size + state.game.levels.movement);
   const placingRef = useRef(placing);
-  const remainingSegments = useAppSelector((state) => state.game.segments);
+  const remainingSegments = useAppSelector((state) => state.game.inventory.segment);
   const startCoordsRef = useRef<string | undefined>();
   const [endCoords, setEndCoords] = useState<string | undefined>();
   const draggingRef = useRef<boolean>(false);

@@ -35,10 +35,12 @@ interface AtomicBomb extends Buyable {
 export type Item = Segment | RangedMissile | LongRangedMissile | Bomb | DirectionalBomb | AtomicBomb;
 
 export interface Inventory {
-  segments: number;
-  rangedMissiles: number;
-  longRangedMissiles: number;
-  bombs: number;
-  directionalBombs: number;
-  atomicBombs: number;
+  segment: number;
+  ranged: number;
+  longranged: number;
+  bomb: number;
+  directional: number;
+  atomic: number;
 }
+
+export type ItemType = 'segment' | 'ranged' | 'longranged' | 'bomb' | 'directional' | 'atomic';

@@ -14,10 +14,6 @@ interface GameState {
    */
   cash: number;
   /**
-   * Stores the number of placeable segments
-   */
-  segments: number;
-  /**
    * An array of ships
    */
   ships: Ship[];
@@ -47,7 +43,6 @@ interface GameState {
 
 const initialState: GameState = {
   cash: 5000,
-  segments: 10,
   ships: [],
   placeMode: false,
   levels: {
@@ -57,12 +52,12 @@ const initialState: GameState = {
     range: 0,
   },
   inventory: {
-    segments: 0,
-    rangedMissiles: 0,
-    longRangedMissiles: 0,
-    bombs: 0,
-    directionalBombs: 0,
-    atomicBombs: 0,
+    segment: 10,
+    ranged: 0,
+    longranged: 0,
+    bomb: 0,
+    directional: 0,
+    atomic: 0,
   },
   store: items,
 };
@@ -90,9 +85,21 @@ const gameReducer = createSlice({
       if (!state.temporaryShip) {
         return;
       }
-      state.segments -= state.temporaryShip.segments.length;
+      state.inventory.segment -= state.temporaryShip.segments.length;
       state.ships.push(state.temporaryShip);
       state.temporaryShip = undefined;
+    },
+    buyItem: (state, action: PayloadAction<string>) => {
+      const item = action.payload;
+      const storeItem: Item = { ...state.store.find((i) => i.type === item)! };
+
+      if (storeItem.type === 'segment') {
+        storeItem.cost = storeItem.cost - state.levels.ship;
+      }
+      if (state.cash < storeItem.cost) throw new Error('Not enough cash for purchase.');
+
+      state.inventory[storeItem.type]++;
+      state.cash = c(state.cash - storeItem.cost);
     },
     buyUpgrade: (state, action: PayloadAction<[UpgradeLevel, SettingsState]>) => {
       const [upgrade, settings] = action.payload;
@@ -134,6 +141,6 @@ const gameReducer = createSlice({
   },
 });
 
-export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyUpgrade } = gameReducer.actions;
+export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade } = gameReducer.actions;
 
 export default gameReducer.reducer;

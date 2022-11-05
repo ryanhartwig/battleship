@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-concat */
 // This optional code is used to register a service worker.
 // register() is not called by default.
 

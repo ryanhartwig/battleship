@@ -13,6 +13,12 @@ export const useBoardSize = () => {
   }, []);
 
   useEffect(() => {
+    const timeout = setTimeout(onResize, 500);
+
+    return () => clearTimeout(timeout);
+  }, [onResize]);
+
+  useEffect(() => {
     window.addEventListener('resize', onResize);
 
     return () => window.removeEventListener('resize', onResize);

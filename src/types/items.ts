@@ -1,5 +1,7 @@
 interface Buyable {
   cost: number;
+  name: string;
+  description: string;
 }
 
 interface Segment extends Buyable {

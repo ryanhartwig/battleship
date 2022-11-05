@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Item } from '../../types/items';
+import { Inventory, Item } from '../../types/items';
 import { Ship } from '../../types/ship';
 import { Upgrade } from '../../types/upgrades';
 import { c } from '../../utility/c';
@@ -38,7 +38,7 @@ interface GameState {
   /**
    * Records any items the player has purchased
    */
-  inventory: Item[];
+  inventory: Inventory;
   /**
    * Records buyable items
    */
@@ -56,7 +56,14 @@ const initialState: GameState = {
     ship: 0,
     range: 0,
   },
-  inventory: [],
+  inventory: {
+    segments: 0,
+    rangedMissiles: 0,
+    longRangedMissiles: 0,
+    bombs: 0,
+    directionalBombs: 0,
+    atomicBombs: 0,
+  },
   store: items,
 };
 

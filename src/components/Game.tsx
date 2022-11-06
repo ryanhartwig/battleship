@@ -7,7 +7,6 @@ import { Upgrades } from './Upgrades';
 import { Arsenal } from './Arsenal';
 import { Setup } from './setup/Setup';
 import { Rules } from './Rules';
-import { Inventory } from './Inventory';
 
 type Tab = 'arsenal' | 'upgrades' | 'rules' | 'setup';
 

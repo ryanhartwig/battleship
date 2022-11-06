@@ -7,7 +7,6 @@ import { Field } from './Field';
 import { ShipItem, ShipLayer } from './ShipLayer';
 import './Board.css';
 import { useBoardSize } from '../hooks/useBoardSize';
-import { Label } from 'semantic-ui-react';
 import { Inventory } from './Inventory';
 
 export const Board = () => {
@@ -15,18 +14,14 @@ export const Board = () => {
 
   const size = useAppSelector((s) => s.settings.size + s.settings.upgrades.move.length - 1);
   const fields = useMemo(() => new Array(size * size).fill(''), [size]);
-  const cash = useAppSelector((s) => s.game.cash);
-  const segments = useAppSelector((s) => s.game.inventory.segment);
 
   const placeMode = useAppSelector((state) => state.game.placeMode);
 
   const { onMouseDown, onMouseMove, onMouseUp, onTouchMove, onTouchStart, temporaryShip } = useEditShip();
 
-  const segmentsRemaining = segments - (temporaryShip?.segments.length || 0);
-
   return (
     <div style={{ maxWidth: '100vw', position: 'relative' }}>
-      <Inventory />
+      {/* <Inventory /> */}
       <div
         id="board"
         className={clsx({ placing: placeMode })}
@@ -52,9 +47,8 @@ export const Board = () => {
         {temporaryShip && <ShipItem ship={temporaryShip} unselectable creating />}
       </div>
       <div className="resources">
-        <Label color="green">Cash: ${cash.toFixed(2)}</Label>
-        <Label color="purple">Income: ${cash.toFixed(2)}</Label>
-        <Label color={segmentsRemaining >= 0 ? 'blue' : 'red'}>Segments: {segmentsRemaining}</Label>
+        <Inventory />
+        {/* <Label color={segmentsRemaining >= 0 ? 'blue' : 'red'}>Segments: {segmentsRemaining}</Label> */}
       </div>
     </div>
   );

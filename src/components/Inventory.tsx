@@ -17,7 +17,7 @@ export const Inventory = () => {
           if (item.type === 'segment' && temporaryShip) count -= temporaryShip.length;
           let transform = item.type === 'directional' ? 'rotate(270deg)' : undefined;
           return (
-            <div>
+            <div className="inventory-item">
               <Icon style={{ fontSize: '30px', border: '1px solid', padding: '2px', borderRadius: '50px', transform }} />
               <p>{count}</p>
             </div>

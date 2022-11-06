@@ -5,6 +5,7 @@ import './Inventory.css';
 export const Inventory = () => {
   const items = useAppSelector((state) => state.game.store);
   const inventory = useAppSelector((state) => state.game.inventory);
+  const temporaryShip = useAppSelector((state) => state.game.temporaryShip?.segments);
 
   return (
     <div className="inventory-wrapper">
@@ -13,6 +14,7 @@ export const Inventory = () => {
         {items.map((item) => {
           const Icon = itemIcons[item.type];
           let count = inventory[item.type];
+          if (item.type === 'segment' && temporaryShip) count -= temporaryShip.length;
           let transform = item.type === 'directional' ? 'rotate(270deg)' : undefined;
           return (
             <div>

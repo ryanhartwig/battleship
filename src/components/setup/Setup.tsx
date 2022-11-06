@@ -3,7 +3,7 @@ import { Button, Input, Modal, Segment } from 'semantic-ui-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 import './Setup.css';
-import { addUser } from '../../reducers/game/gameSlice';
+import { addUser, removeUser } from '../../reducers/game/gameSlice';
 
 export const Setup = () => {
   const dispatch = useAppDispatch();
@@ -51,7 +51,14 @@ export const Setup = () => {
                   {player[0]} <span>({player[1]})</span>
                 </p>
                 <div>
-                  <Button size="mini">Remove</Button>
+                  <Button
+                    size="mini"
+                    onClick={() => {
+                      dispatch(removeUser(player[2]));
+                    }}
+                  >
+                    Remove
+                  </Button>
                 </div>
               </Segment>
             );

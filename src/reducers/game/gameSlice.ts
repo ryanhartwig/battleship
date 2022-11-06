@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Inventory, Item } from '../../types/items';
 import { Ship } from '../../types/ship';
 import { Upgrade } from '../../types/upgrades';
+import { User } from '../../types/user';
 import { c } from '../../utility/c';
 import { items } from '../../utility/itemsData';
 import { SettingsState } from '../settings/settingsSlice';
@@ -39,6 +40,10 @@ interface GameState {
    * Records buyable items
    */
   store: Item[];
+  users: {
+    self: User;
+    opponents: User[];
+  };
 }
 
 const initialState: GameState = {
@@ -60,6 +65,14 @@ const initialState: GameState = {
     atomic: 0,
   },
   store: items,
+  users: {
+    self: {
+      name: 'Me',
+      initial: 'Me',
+      id: Date.now().toString(),
+    },
+    opponents: [],
+  },
 };
 
 const gameReducer = createSlice({
@@ -88,6 +101,15 @@ const gameReducer = createSlice({
       state.inventory.segment -= state.temporaryShip.segments.length;
       state.ships.push(state.temporaryShip);
       state.temporaryShip = undefined;
+    },
+    addUser: (state, action: PayloadAction<User>) => {
+      state.users.opponents.push(action.payload);
+    },
+    removeUser: (state, action: PayloadAction<string>) => {
+      state.users.opponents = state.users.opponents.filter(({ id }) => id !== action.payload);
+    },
+    editMe: (state, action: PayloadAction<User>) => {
+      state.users.self = action.payload;
     },
     buyItem: (state, action: PayloadAction<string>) => {
       const item = action.payload;
@@ -141,6 +163,6 @@ const gameReducer = createSlice({
   },
 });
 
-export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade } = gameReducer.actions;
+export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe } = gameReducer.actions;
 
 export default gameReducer.reducer;

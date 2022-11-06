@@ -1,0 +1,12 @@
+.setup-wrapper p {
+  margin: 0 !important;
+}
+
+.setup-wrapper span {
+  color: rgba(103, 102, 102, 0.764) !important;
+}
+
+.setup-users {
+  width: 80%;
+  margin: 0 auto;
+}

@@ -11,6 +11,11 @@ export type UpgradeLevel = 'movement' | 'pillage' | 'ship' | 'range';
 
 interface GameState {
   /**
+   * Increment the game version when breaking changes are made to the game state object.
+   * This will prevent bugs when we restore a game from localStorage.
+   */
+  version: number;
+  /**
    * Stores the amount of available cash
    */
   cash: number;
@@ -47,6 +52,7 @@ interface GameState {
 }
 
 const initialState: GameState = {
+  version: 1,
   cash: 5000,
   ships: [],
   placeMode: false,
@@ -75,9 +81,19 @@ const initialState: GameState = {
   },
 };
 
-const gameReducer = createSlice({
+let savedState: GameState | undefined;
+try {
+  savedState = JSON.parse(localStorage.getItem('game') as string) as GameState;
+  if (savedState.version !== initialState.version) {
+    savedState = undefined;
+  }
+} catch (e) {
+  // no game/data saved
+}
+
+export const gameSlice = createSlice({
   name: 'game',
-  initialState,
+  initialState: savedState || initialState,
   reducers: {
     togglePlaceMode: (state) => {
       state.placeMode = !state.placeMode;
@@ -123,6 +139,9 @@ const gameReducer = createSlice({
       state.inventory[storeItem.type]++;
       state.cash = c(state.cash - storeItem.cost);
     },
+    resetSlice: () => {
+      return initialState;
+    },
     buyUpgrade: (state, action: PayloadAction<[UpgradeLevel, SettingsState]>) => {
       const [upgrade, settings] = action.payload;
       let upgrades: Upgrade[];
@@ -163,6 +182,6 @@ const gameReducer = createSlice({
   },
 });
 
-export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe } = gameReducer.actions;
+export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice } = gameSlice.actions;
 
-export default gameReducer.reducer;
+export default gameSlice.reducer;

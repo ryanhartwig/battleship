@@ -26,10 +26,10 @@ export const ActionBar = () => {
         {/* Left */}
         <div>
           <Label className="action-label" color="green">
-            Cash: ${cash.toFixed(2)}
+            Cash: ${cash}
           </Label>
           <Label className="action-label" color="purple">
-            Income: ${cash.toFixed(2)}
+            Income: ${cash}
           </Label>
         </div>
 

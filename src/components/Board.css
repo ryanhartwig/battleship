@@ -28,3 +28,21 @@
     box-shadow: #00cc0088 0 0 9px 6px;
   }
 }
+
+/* @media only screen and (max-width: 595px) {
+  #board {
+    margin: 32px 59px 0 auto;
+  }
+}
+
+@media only screen and (max-width: 578px) {
+  #board {
+    margin: 32px 42px 0 auto;
+  }
+}
+
+@media only screen and (max-width: 338px) {
+  #board {
+    margin: 32px auto 0 auto;
+  }
+} */

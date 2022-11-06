@@ -1,18 +1,6 @@
 .inventory-wrapper {
-  /* border: 1px solid red; */
-
-  /* position: absolute; */
   right: 0;
-  /* top: 5%; */
-
-  /* height: 100%; */
   width: 100%;
-}
-
-@media only screen and (max-width: 400px) {
-  .inventory-wrapper {
-    width: 6%;
-  }
 }
 
 .items-wrapper {
@@ -20,9 +8,6 @@
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
-
-  /* height: 100%; */
-  /* padding: 20px 0; */
 }
 
 .items-wrapper p {

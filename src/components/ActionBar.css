@@ -13,6 +13,23 @@
 .info-box {
   display: flex;
   justify-content: space-between;
+  flex-wrap: nowrap;
+  height: 32px;
+}
+
+.info-box > div {
+  flex-shrink: 1;
+  max-height: 100%;
+  width: fit-content;
+}
+
+.info-box > div:first-child {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.info-box > div:first-child > * {
+  flex-shrink: 1;
 }
 
 .info-box .action-label {

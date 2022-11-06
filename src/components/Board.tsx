@@ -8,6 +8,7 @@ import { ShipItem, ShipLayer } from './ShipLayer';
 import './Board.css';
 import { useBoardSize } from '../hooks/useBoardSize';
 import { Label } from 'semantic-ui-react';
+import { Inventory } from './Inventory';
 
 export const Board = () => {
   const sizePx = useBoardSize();
@@ -24,7 +25,8 @@ export const Board = () => {
   const segmentsRemaining = segments - (temporaryShip?.segments.length || 0);
 
   return (
-    <div style={{ maxWidth: '100vw' }}>
+    <div style={{ maxWidth: '100vw', position: 'relative' }}>
+      <Inventory />
       <div
         id="board"
         className={clsx({ placing: placeMode })}

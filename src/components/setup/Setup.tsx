@@ -1,4 +1,4 @@
-import { Button, Segment } from 'semantic-ui-react';
+import { Button, Container, Segment } from 'semantic-ui-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
 import './Setup.css';
@@ -14,38 +14,46 @@ export const Setup = () => {
     <div className="setup-wrapper">
       <section className="setup-users">
         {/* Use container */}
-        <Segment.Group>
-          <Segment style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <p style={{ verticalAlign: 'center' }}>
-              {self[0]} <span>({self[1]})</span>
-            </p>
-            <Button size="mini">Edit</Button>
-          </Segment>
-        </Segment.Group>
-        <Segment.Group raised>
-          {opponents.map((player) => {
-            return (
-              <Segment key={player[2]} style={{ display: 'flex', justifyContent: 'space-between' }}>
-                <p>
-                  {player[0]} <span>({player[1]})</span>
-                </p>
-                <div>
-                  <Button
-                    size="mini"
-                    onClick={() => {
-                      dispatch(removeUser(player[2]));
-                    }}
-                  >
-                    Remove
-                  </Button>
-                </div>
-              </Segment>
-            );
-          })}
-        </Segment.Group>
+        <Container>
+          <Segment.Group>
+            <Segment style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <p style={{ verticalAlign: 'center' }}>
+                {self[0]} <span>({self[1]})</span>
+              </p>
+              {/* Edit user modal */}
+              <AddEditUser add={false} />
+            </Segment>
+          </Segment.Group>
+        </Container>
+
+        <Container style={{ margin: '20px 0' }}>
+          <Segment.Group raised>
+            {opponents.map((player) => {
+              return (
+                <Segment key={player[2]} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <p>
+                    {player[0]} <span>({player[1]})</span>
+                  </p>
+                  <div>
+                    <Button
+                      size="mini"
+                      onClick={() => {
+                        dispatch(removeUser(player[2]));
+                      }}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                </Segment>
+              );
+            })}
+          </Segment.Group>
+        </Container>
 
         {/* Add user */}
-        <AddEditUser />
+        <div style={{ margin: '0 auto', width: 'fit-content' }}>
+          <AddEditUser add />
+        </div>
       </section>
     </div>
   );

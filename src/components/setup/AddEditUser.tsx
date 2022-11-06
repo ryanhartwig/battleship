@@ -1,7 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Modal, Button, Input } from 'semantic-ui-react';
 import { useAppDispatch } from '../../app/hooks';
-import { addUser } from '../../reducers/game/gameSlice';
+import { addUser, editMe } from '../../reducers/game/gameSlice';
+import { SemanticSIZES } from 'semantic-ui-react';
+
+import './AddEditUser.css';
 
 interface AddEditUserProps {
   add?: boolean;
@@ -15,9 +18,14 @@ export const AddEditUser = ({ add = false }: AddEditUserProps) => {
   const [placeholder, setPlaceholder] = useState<string>('');
   const [initial, setInitial] = useState<string>('');
 
+  const size: SemanticSIZES = add ? 'medium' : 'tiny';
+
   const addPlayer = useCallback(() => {
     if (add) {
       dispatch(addUser([name, initial || placeholder]));
+    } else {
+      dispatch(editMe([name, initial || placeholder]));
+      setOpen(false);
     }
 
     setName('');
@@ -36,8 +44,8 @@ export const AddEditUser = ({ add = false }: AddEditUserProps) => {
   }, [name]);
 
   return (
-    <Modal onClose={() => setOpen(false)} onOpen={() => setOpen(true)} open={open} trigger={<Button>Add User</Button>}>
-      <Modal.Header>Add User</Modal.Header>
+    <Modal onClose={() => setOpen(false)} onOpen={() => setOpen(true)} open={open} trigger={<Button size={size}>{add ? 'Add User' : 'Edit'}</Button>}>
+      <Modal.Header>{add ? 'Add User' : 'Edit User'}</Modal.Header>
       <Modal.Content>
         <form
           onSubmit={(e) => {
@@ -57,7 +65,9 @@ export const AddEditUser = ({ add = false }: AddEditUserProps) => {
             </div>
           </div>
 
-          <Button type="submit">Add</Button>
+          <Button className="user-submit" type="submit">
+            {add ? 'Add' : 'Confirm'}
+          </Button>
         </form>
       </Modal.Content>
       <Modal.Actions>

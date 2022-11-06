@@ -100,15 +100,17 @@ const gameReducer = createSlice({
       state.ships.push(state.temporaryShip);
       state.temporaryShip = undefined;
     },
-    addUser: (state, action: PayloadAction<[string, string?]>) => {
-      let [name, initial] = action.payload;
-      initial = initial || name[0];
-      let id = Date.now().toString();
+    addUser: (state, action: PayloadAction<[string, string]>) => {
+      const [name, initial] = action.payload;
+      const id = Date.now().toString();
 
       state.users.opponents.push([name, initial, id]);
     },
     removeUser: (state, action: PayloadAction<string>) => {
       state.users.opponents = state.users.opponents.filter(([x, y, id]) => id !== action.payload);
+    },
+    editMe: (state, action: PayloadAction<[string, string]>) => {
+      state.users.self = action.payload;
     },
     buyItem: (state, action: PayloadAction<string>) => {
       const item = action.payload;
@@ -162,6 +164,6 @@ const gameReducer = createSlice({
   },
 });
 
-export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser } = gameReducer.actions;
+export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe } = gameReducer.actions;
 
 export default gameReducer.reducer;

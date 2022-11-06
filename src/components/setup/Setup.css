@@ -1,3 +1,11 @@
+.setup-wrapper p {
+  margin: 0 !important;
+}
+
+.setup-wrapper span {
+  color: rgba(103, 102, 102, 0.764) !important;
+}
+
 .setup-users {
   width: 80%;
   margin: 0 auto;
@@ -13,4 +21,9 @@
   margin: 0 10px;
   max-width: 40px;
   min-width: 40px;
+}
+
+.setup-users-fields {
+  display: flex;
+  flex-wrap: wrap;
 }

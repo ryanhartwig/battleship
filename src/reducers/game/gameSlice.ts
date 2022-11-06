@@ -159,6 +159,6 @@ const gameReducer = createSlice({
   },
 });
 
-export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade } = gameReducer.actions;
+export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser } = gameReducer.actions;
 
 export default gameReducer.reducer;

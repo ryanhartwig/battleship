@@ -2,14 +2,12 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Inventory, Item } from '../../types/items';
 import { Ship } from '../../types/ship';
 import { Upgrade } from '../../types/upgrades';
+import { User } from '../../types/user';
 import { c } from '../../utility/c';
 import { items } from '../../utility/itemsData';
 import { SettingsState } from '../settings/settingsSlice';
 
 export type UpgradeLevel = 'movement' | 'pillage' | 'ship' | 'range';
-type name = string;
-type initial = string;
-type id = string;
 
 interface GameState {
   /**
@@ -43,8 +41,8 @@ interface GameState {
    */
   store: Item[];
   users: {
-    self: [name, initial];
-    opponents: [name, initial, id][];
+    self: User;
+    opponents: User[];
   };
 }
 
@@ -68,7 +66,11 @@ const initialState: GameState = {
   },
   store: items,
   users: {
-    self: ['Me', 'Me'],
+    self: {
+      name: 'Me',
+      initial: 'Me',
+      id: Date.now().toString(),
+    },
     opponents: [],
   },
 };
@@ -100,16 +102,13 @@ const gameReducer = createSlice({
       state.ships.push(state.temporaryShip);
       state.temporaryShip = undefined;
     },
-    addUser: (state, action: PayloadAction<[string, string]>) => {
-      const [name, initial] = action.payload;
-      const id = Date.now().toString();
-
-      state.users.opponents.push([name, initial, id]);
+    addUser: (state, action: PayloadAction<User>) => {
+      state.users.opponents.push(action.payload);
     },
     removeUser: (state, action: PayloadAction<string>) => {
-      state.users.opponents = state.users.opponents.filter(([x, y, id]) => id !== action.payload);
+      state.users.opponents = state.users.opponents.filter(({ id }) => id !== action.payload);
     },
-    editMe: (state, action: PayloadAction<[string, string]>) => {
+    editMe: (state, action: PayloadAction<User>) => {
       state.users.self = action.payload;
     },
     buyItem: (state, action: PayloadAction<string>) => {

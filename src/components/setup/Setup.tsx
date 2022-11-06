@@ -18,7 +18,7 @@ export const Setup = () => {
           <Segment.Group>
             <Segment style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <p style={{ verticalAlign: 'center' }}>
-                {self[0]} <span>({self[1]})</span>
+                {self.name} <span>({self.initial})</span>
               </p>
               {/* Edit user modal */}
               <AddEditUser add={false} />
@@ -30,15 +30,15 @@ export const Setup = () => {
           <Segment.Group raised>
             {opponents.map((player) => {
               return (
-                <Segment key={player[2]} style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Segment key={player.id} style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <p>
-                    {player[0]} <span>({player[1]})</span>
+                    {player.name} <span>({player.initial})</span>
                   </p>
                   <div>
                     <Button
                       size="mini"
                       onClick={() => {
-                        dispatch(removeUser(player[2]));
+                        dispatch(removeUser(player.id));
                       }}
                     >
                       Remove

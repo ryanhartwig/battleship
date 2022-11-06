@@ -21,10 +21,15 @@ export const AddEditUser = ({ add = false }: AddEditUserProps) => {
   const size: SemanticSIZES = add ? 'medium' : 'tiny';
 
   const addPlayer = useCallback(() => {
+    const user = {
+      name,
+      initial: initial || placeholder,
+      id: Date.now().toString(),
+    };
     if (add) {
-      dispatch(addUser([name, initial || placeholder]));
+      dispatch(addUser(user));
     } else {
-      dispatch(editMe([name, initial || placeholder]));
+      dispatch(editMe(user));
       setOpen(false);
     }
 

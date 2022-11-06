@@ -5,6 +5,7 @@ import { Board } from './Board';
 import { ActionBar } from './ActionBar';
 import { Upgrades } from './Upgrades';
 import { Arsenal } from './Arsenal';
+import { Rules } from './Rules';
 
 type Tab = 'arsenal' | 'upgrades' | 'rules';
 
@@ -36,8 +37,10 @@ export const Game = () => {
           <Menu.Item {...createTabProps('upgrades')}>Upgrades</Menu.Item>
           <Menu.Item {...createTabProps('rules')}>Rules</Menu.Item>
         </Menu>
+
         {tab === 'upgrades' && <Upgrades />}
         {tab === 'arsenal' && <Arsenal />}
+        {tab === 'rules' && <Rules />}
       </div>
 
       <ActionBar />

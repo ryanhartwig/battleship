@@ -24,13 +24,14 @@ export const Arsenal = () => {
     <div className="store">
       {items.map((item) => {
         const Icon = itemIcons[item.type];
+        let style = item.type === 'directional' ? { transform: 'rotate(270deg)' } : undefined;
         return (
           <Card key={item.type} className="store-item" style={{ width: '180px', height: '180px' }}>
             <Card.Content>
               <Card.Header style={{ textAlign: 'center', fontSize: '1rem' }}>{item.name}</Card.Header>
               <Card.Description className="store-item-content-wrapper" style={{ position: 'relative', margin: '0' }}>
                 <div className="store-item-icon">
-                  <Icon />
+                  <Icon style={style} />
                 </div>
                 <div className="store-item-description">{item.description}</div>
               </Card.Description>

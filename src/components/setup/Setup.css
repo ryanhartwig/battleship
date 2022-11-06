@@ -1,0 +1,16 @@
+.setup-users {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.button-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-label > *:first-child {
+  margin: 0 10px;
+  max-width: 40px;
+  min-width: 40px;
+}

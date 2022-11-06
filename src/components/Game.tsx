@@ -5,13 +5,15 @@ import { Board } from './Board';
 import { ActionBar } from './ActionBar';
 import { Upgrades } from './Upgrades';
 import { Arsenal } from './Arsenal';
+import { Setup } from './setup/Setup';
 
-type Tab = 'arsenal' | 'upgrades' | 'rules';
+type Tab = 'arsenal' | 'upgrades' | 'rules' | 'setup';
 
 const tabColors: Record<Tab, SemanticCOLORS> = {
   arsenal: 'blue',
   upgrades: 'green',
   rules: 'yellow',
+  setup: 'orange',
 };
 
 export const Game = () => {
@@ -31,13 +33,15 @@ export const Game = () => {
       <Board />
 
       <div className="main-content">
-        <Menu inverted widths={3} style={{ borderRadius: 0, marginTop: 0, position: 'sticky', top: 0, zIndex: 1000 }}>
+        <Menu inverted widths={4} style={{ borderRadius: 0, marginTop: 0, position: 'sticky', top: 0, zIndex: 1000 }}>
           <Menu.Item {...createTabProps('arsenal')}>Arsenal</Menu.Item>
           <Menu.Item {...createTabProps('upgrades')}>Upgrades</Menu.Item>
           <Menu.Item {...createTabProps('rules')}>Rules</Menu.Item>
+          <Menu.Item {...createTabProps('setup')}>Setup</Menu.Item>
         </Menu>
         {tab === 'upgrades' && <Upgrades />}
         {tab === 'arsenal' && <Arsenal />}
+        {tab === 'setup' && <Setup />}
       </div>
 
       <ActionBar />

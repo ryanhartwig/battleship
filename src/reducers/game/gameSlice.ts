@@ -7,6 +7,9 @@ import { items } from '../../utility/itemsData';
 import { SettingsState } from '../settings/settingsSlice';
 
 export type UpgradeLevel = 'movement' | 'pillage' | 'ship' | 'range';
+type name = string;
+type initial = string;
+type id = string;
 
 interface GameState {
   /**
@@ -39,6 +42,10 @@ interface GameState {
    * Records buyable items
    */
   store: Item[];
+  users: {
+    self: [name, initial];
+    opponents: [name, initial, id][];
+  };
 }
 
 const initialState: GameState = {
@@ -60,6 +67,10 @@ const initialState: GameState = {
     atomic: 0,
   },
   store: items,
+  users: {
+    self: ['Me', 'Me'],
+    opponents: [],
+  },
 };
 
 const gameReducer = createSlice({
@@ -88,6 +99,13 @@ const gameReducer = createSlice({
       state.inventory.segment -= state.temporaryShip.segments.length;
       state.ships.push(state.temporaryShip);
       state.temporaryShip = undefined;
+    },
+    addUser: (state, action: PayloadAction<[string, string?]>) => {
+      let [name, initial] = action.payload;
+      initial = initial || name[0];
+      let id = Date.now().toString();
+
+      state.users.opponents.push([name, initial, id]);
     },
     buyItem: (state, action: PayloadAction<string>) => {
       const item = action.payload;

@@ -6,6 +6,7 @@ import { ActionBar } from './ActionBar';
 import { Upgrades } from './Upgrades';
 import { Arsenal } from './Arsenal';
 import { Setup } from './setup/Setup';
+import { Rules } from './Rules';
 
 type Tab = 'arsenal' | 'upgrades' | 'rules' | 'setup';
 
@@ -39,9 +40,11 @@ export const Game = () => {
           <Menu.Item {...createTabProps('rules')}>Rules</Menu.Item>
           <Menu.Item {...createTabProps('setup')}>Setup</Menu.Item>
         </Menu>
+
         {tab === 'upgrades' && <Upgrades />}
         {tab === 'arsenal' && <Arsenal />}
         {tab === 'setup' && <Setup />}
+        {tab === 'rules' && <Rules />}
       </div>
 
       <ActionBar />

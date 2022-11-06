@@ -1,12 +1,12 @@
 .inventory-wrapper {
   /* border: 1px solid red; */
 
-  position: absolute;
+  /* position: absolute; */
   right: 0;
   /* top: 5%; */
 
-  height: 100%;
-  width: 5%;
+  /* height: 100%; */
+  width: 100%;
 }
 
 @media only screen and (max-width: 400px) {
@@ -17,14 +17,23 @@
 
 .items-wrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-around;
   align-items: center;
 
-  height: 100%;
-  padding: 20px 0;
+  /* height: 100%; */
+  /* padding: 20px 0; */
 }
 
 .items-wrapper p {
   text-align: center;
+}
+
+.inventory-item {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.inventory-item > * {
+  padding: 0 10px;
 }

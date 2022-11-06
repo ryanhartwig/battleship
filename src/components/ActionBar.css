@@ -12,4 +12,9 @@
 
 .info-box {
   display: flex;
+  justify-content: space-between;
+}
+
+.info-box .action-label {
+  line-height: 1.8 !important;
 }

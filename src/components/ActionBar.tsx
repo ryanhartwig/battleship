@@ -24,29 +24,31 @@ export const ActionBar = () => {
     <div className="action-bar">
       <div className="info-box">
         {/* Left */}
-        <div>
-          <Label className="action-label" color="green">
-            Cash: ${cash}
-          </Label>
-          <Label className="action-label" color="purple">
-            Income: ${cash}
-          </Label>
-        </div>
+        {!placeMode && (
+          <div>
+            <Label className="action-label" color="green">
+              <p>Cash: ${cash}</p>
+            </Label>
+            <Label className="action-label" color="purple">
+              <p>Income: ${cash}</p>
+            </Label>
+          </div>
+        )}
 
         {/* Right */}
         <div>
           {placeMode ? (
             <>
-              {temporaryShip?.invalidReason && <span style={{ color: 'rgba(255,0,0,0.6)', marginRight: '6px' }}>{temporaryShip.invalidReason}</span>}
               <Button secondary onClick={onPlaceSegments}>
                 Cancel
               </Button>
               <Button primary disabled={!temporaryShip || temporaryShip.invalid} onClick={onSave}>
                 Place
               </Button>
+              {temporaryShip?.invalidReason && <p style={{ color: 'rgba(255,0,0,0.6)', marginRight: '6px' }}>{temporaryShip.invalidReason}</p>}
             </>
           ) : (
-            <Button style={{ marginRight: 0 }} color="green" onClick={onPlaceSegments}>
+            <Button style={{ marginRight: 0, lineHeight: 0.7, padding: '11px 8px' }} color="green" onClick={onPlaceSegments}>
               Place Segment(s)
             </Button>
           )}

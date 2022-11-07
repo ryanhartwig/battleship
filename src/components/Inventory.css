@@ -8,6 +8,8 @@
   flex-direction: row;
   justify-content: space-around;
   align-items: center;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .items-wrapper p {
@@ -18,7 +20,21 @@
   display: flex;
   justify-content: space-around;
   align-items: center;
+  flex-direction: column;
 }
 .inventory-item > * {
   padding: 0 10px;
+}
+
+.inventory-item:hover {
+  cursor: pointer;
+}
+.inventory-item-icon {
+  transition: position 0.1s, box-shadow 0.1s;
+  position: relative;
+  top: 0;
+}
+.inventory-item-icon:hover {
+  box-shadow: 0 0 1px 1px green;
+  top: -2px;
 }

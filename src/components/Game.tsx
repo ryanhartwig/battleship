@@ -47,8 +47,6 @@ export const Game = () => {
         {tab === 'rules' && <Rules />}
       </div>
 
-      {/* <Inventory /> */}
-
       <ActionBar />
     </div>
   );

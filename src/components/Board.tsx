@@ -48,7 +48,6 @@ export const Board = () => {
       </div>
       <div className="resources">
         <Inventory />
-        {/* <Label color={segmentsRemaining >= 0 ? 'blue' : 'red'}>Segments: {segmentsRemaining}</Label> */}
       </div>
     </div>
   );

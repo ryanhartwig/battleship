@@ -8,7 +8,15 @@ import './Inventory.css';
 export const Inventory = () => {
   const dispatch = useAppDispatch();
 
-  const items = useAppSelector((state) => state.game.store);
+  const missile: Item = {
+    type: 'missile',
+    name: 'Missile',
+    cost: 0,
+    description: 'Regular ship attack',
+  };
+
+  const [segment, ...rest] = useAppSelector((state) => state.game.store);
+  const items: Item[] = [segment, missile, ...rest];
   const inventory = useAppSelector((state) => state.game.inventory);
   const newSegments = useAppSelector((state) => state.game.temporaryShip?.segments.filter((s) => s.new));
 
@@ -39,7 +47,7 @@ export const Inventory = () => {
               className="inventory-item"
             >
               <Icon style={{ fontSize: '30px', border: '1px solid', padding: '2px', borderRadius: '50px', transform }} className="inventory-item-icon" />
-              <p>{count}</p>
+              <p>{count === Infinity ? '∞' : count}</p>
             </div>
           );
         })}

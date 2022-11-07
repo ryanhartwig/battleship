@@ -8,6 +8,10 @@ interface Segment extends Buyable {
   type: 'segment';
 }
 
+interface Missile extends Buyable {
+  type: 'missile';
+}
+
 interface RangedMissile extends Buyable {
   type: 'ranged';
   distance: number;
@@ -32,10 +36,11 @@ interface AtomicBomb extends Buyable {
   size: number;
 }
 
-export type Item = Segment | RangedMissile | LongRangedMissile | Bomb | DirectionalBomb | AtomicBomb;
+export type Item = Segment | Missile | RangedMissile | LongRangedMissile | Bomb | DirectionalBomb | AtomicBomb;
 
 export interface Inventory {
   segment: number;
+  missile: number;
   ranged: number;
   longranged: number;
   bomb: number;
@@ -43,4 +48,4 @@ export interface Inventory {
   atomic: number;
 }
 
-export type ItemType = 'segment' | 'ranged' | 'longranged' | 'bomb' | 'directional' | 'atomic';
+export type ItemType = 'segment' | 'missile' | 'ranged' | 'longranged' | 'bomb' | 'directional' | 'atomic';

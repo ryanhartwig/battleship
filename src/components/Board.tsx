@@ -30,6 +30,7 @@ export const Board = () => {
         onMouseUp={onMouseUp}
         onTouchMove={onTouchMove}
         onTouchStart={onTouchStart}
+        onClick={onClick}
         style={{
           gridTemplateColumns: `repeat(${size}, 1fr)`,
           gridTemplateRows: `repeat(${size}, 1fr)`,

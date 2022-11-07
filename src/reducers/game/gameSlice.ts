@@ -70,6 +70,7 @@ const initialState: GameState = {
   },
   inventory: {
     segment: 10,
+    missile: Infinity,
     ranged: 0,
     longranged: 0,
     bomb: 0,
@@ -99,7 +100,7 @@ try {
 
 export const gameSlice = createSlice({
   name: 'game',
-  initialState: savedState || initialState,
+  initialState: process.env.NODE_ENV === 'production' ? savedState || initialState : initialState,
   reducers: {
     togglePlaceMode: (state) => {
       state.placeMode = !state.placeMode;

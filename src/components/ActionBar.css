@@ -37,3 +37,7 @@
 .info-box .action-label {
   line-height: 1.8 !important;
 }
+
+.info-box .action-label.income {
+  cursor: pointer;
+}

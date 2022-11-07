@@ -4,6 +4,7 @@ import { Ship } from '../../types/ship';
 import { Upgrade } from '../../types/upgrades';
 import { User } from '../../types/user';
 import { c } from '../../utility/c';
+import { calculateIncome } from '../../utility/calculateIncome';
 import { items } from '../../utility/itemsData';
 import { SettingsState } from '../settings/settingsSlice';
 
@@ -53,7 +54,7 @@ interface GameState {
 
 const initialState: GameState = {
   version: 2,
-  cash: 5000,
+  cash: 0,
   ships: [],
   placeMode: false,
   levels: {
@@ -181,9 +182,13 @@ export const gameSlice = createSlice({
       state.cash = c(state.cash - upgrades[level + 1].cost);
       state.levels[upgrade] += 1;
     },
+    takeIncome: (state) => {
+      const income = calculateIncome(state.ships);
+      state.cash = c(state.cash + income);
+    },
   },
 });
 
-export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice } = gameSlice.actions;
+export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome } = gameSlice.actions;
 
 export default gameSlice.reducer;

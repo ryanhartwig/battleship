@@ -35,16 +35,20 @@ export const Rules = () => {
           <p>
             Ships of varying lengths contribute more to your income. The calculation is as follows.
             <br />
-            <strong>Note:</strong> damaged ships only contribute 1 income per segment.
+            <strong>Note:</strong> damaged ships are broken (income wise) into multiple ships. If one of said segments is less than 3 segments, income is $1 per segment remaining.
+            <br />
+            <strong>Example:</strong> a ship of length 7, that provides $15 income, when shot in the 3rd segment, would provide (2x1 + 1x6) income.
           </p>
-          <Table>
+          <Table singleLine>
             <Table.Header>
-              <Table.HeaderCell>3 Segments</Table.HeaderCell>
-              <Table.HeaderCell>4 Segments</Table.HeaderCell>
-              <Table.HeaderCell>5 Segments</Table.HeaderCell>
-              <Table.HeaderCell>6 Segments</Table.HeaderCell>
-              <Table.HeaderCell>7 Segments</Table.HeaderCell>
-              <Table.HeaderCell>8 Segments</Table.HeaderCell>
+              <Table.Row>
+                <Table.HeaderCell>3</Table.HeaderCell>
+                <Table.HeaderCell>4</Table.HeaderCell>
+                <Table.HeaderCell>5</Table.HeaderCell>
+                <Table.HeaderCell>6</Table.HeaderCell>
+                <Table.HeaderCell>7</Table.HeaderCell>
+                <Table.HeaderCell>8</Table.HeaderCell>
+              </Table.Row>
             </Table.Header>
             <Table.Body>
               <Table.Row>

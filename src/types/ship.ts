@@ -5,9 +5,10 @@ export interface ShipSegment {
   x: number;
   y: number;
   /**
-   * Represents the original price that was paid for this segment
+   * A temporary field to make it easier to figure out
+   * if a segment is new or not on a temporary ship.
    */
-  originalCost: number;
+  new?: boolean;
 }
 
 /**

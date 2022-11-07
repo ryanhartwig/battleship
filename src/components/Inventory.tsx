@@ -10,7 +10,7 @@ export const Inventory = () => {
 
   const items = useAppSelector((state) => state.game.store);
   const inventory = useAppSelector((state) => state.game.inventory);
-  const temporaryShip = useAppSelector((state) => state.game.temporaryShip?.segments);
+  const newSegments = useAppSelector((state) => state.game.temporaryShip?.segments.filter((s) => s.new));
 
   const handleClick = useCallback(
     (item: Item) => {
@@ -28,7 +28,7 @@ export const Inventory = () => {
         {items.map((item) => {
           const Icon = itemIcons[item.type];
           let count = inventory[item.type];
-          if (item.type === 'segment' && temporaryShip) count -= temporaryShip.length;
+          if (item.type === 'segment' && newSegments) count -= newSegments.length;
           let transform = item.type === 'directional' ? 'rotate(270deg)' : undefined;
           return (
             <div

@@ -45,7 +45,7 @@ export const ActionBar = () => {
               <Button primary disabled={!temporaryShip || temporaryShip.invalid} onClick={onSave}>
                 Place
               </Button>
-              {temporaryShip?.invalidReason && <p style={{ color: 'rgba(255,0,0,0.6)', marginRight: '6px' }}>{temporaryShip.invalidReason}</p>}
+              {temporaryShip?.invalidReason && <p style={{ color: 'rgba(255,0,0,.8)', margin: '7px' }}>{temporaryShip.invalidReason}</p>}
             </>
           ) : (
             <Button style={{ marginRight: 0, lineHeight: 0.7, padding: '11px 8px' }} color="green" onClick={onPlaceSegments}>

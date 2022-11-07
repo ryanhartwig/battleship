@@ -18,7 +18,7 @@ export const Inventory = () => {
           let transform = item.type === 'directional' ? 'rotate(270deg)' : undefined;
           return (
             <div key={item.type} className="inventory-item">
-              <Icon style={{ fontSize: '30px', border: '1px solid', padding: '2px', borderRadius: '50px', transform }} />
+              <Icon style={{ fontSize: '30px', border: '1px solid', padding: '2px', borderRadius: '50px', transform }} className="inventory-item-icon" />
               <p>{count}</p>
             </div>
           );

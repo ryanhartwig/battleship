@@ -15,6 +15,7 @@
   justify-content: space-between;
   flex-wrap: nowrap;
   height: 32px;
+  flex-direction: row;
 }
 
 .info-box > div {

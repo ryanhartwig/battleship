@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Button, Card, Container } from 'semantic-ui-react';
+import { Button, Card, Container, Table } from 'semantic-ui-react';
 import { useAppDispatch } from '../app/hooks';
 import { resetSlice } from '../reducers/game/gameSlice';
 import './Rules.css';
@@ -31,6 +31,32 @@ export const Rules = () => {
             You may also choose to pay to pass your turn. Each turn that you pass increases the cost by <strong>$1</strong>, so use it sparingly! Skipping the attack phase can be helpful to hide the location of your ships!
           </p>
           <p>You may choose to attack a square you belong to. If you do, you must announce that you have hit your own ship.</p>
+          <h2>Income</h2>
+          <p>
+            Ships of varying lengths contribute more to your income. The calculation is as follows.
+            <br />
+            <strong>Note:</strong> damaged ships only contribute 1 income per segment.
+          </p>
+          <Table>
+            <Table.Header>
+              <Table.HeaderCell>3 Segments</Table.HeaderCell>
+              <Table.HeaderCell>4 Segments</Table.HeaderCell>
+              <Table.HeaderCell>5 Segments</Table.HeaderCell>
+              <Table.HeaderCell>6 Segments</Table.HeaderCell>
+              <Table.HeaderCell>7 Segments</Table.HeaderCell>
+              <Table.HeaderCell>8 Segments</Table.HeaderCell>
+            </Table.Header>
+            <Table.Body>
+              <Table.Row>
+                <Table.Cell>$3.00</Table.Cell>
+                <Table.Cell>$6.00</Table.Cell>
+                <Table.Cell>$9.00</Table.Cell>
+                <Table.Cell>$12.00</Table.Cell>
+                <Table.Cell>$15.00</Table.Cell>
+                <Table.Cell>$18.00</Table.Cell>
+              </Table.Row>
+            </Table.Body>
+          </Table>
           <h2>Lose Scenario</h2>
           <p>You lose the game when you have less than 3 segments on the board.</p>
           <h2>Extra Rules</h2>

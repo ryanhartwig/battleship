@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { setTemporaryShip } from '../reducers/game/gameSlice';
-import { Ship, ShipSegment } from '../types/ship';
+import { selectShip, setTemporaryShip } from '../reducers/game/gameSlice';
+import { ShipSegment } from '../types/ship';
 
 const isField = (e: any) => {
   return e.target.className.includes('field');
@@ -9,24 +9,26 @@ const isField = (e: any) => {
 
 export const useEditShip = () => {
   const placing = useAppSelector((state) => state.game.placeMode);
-  const tempShip = useAppSelector((state) => state.game.temporaryShip);
+  const temporaryShip = useAppSelector((state) => state.game.temporaryShip);
+  const editing = useAppSelector((s) => s.game.editingShip);
   const size = useAppSelector((state) => state.settings.size + state.game.levels.movement);
   const placingRef = useRef(placing);
   const remainingSegments = useAppSelector((state) => state.game.inventory.segment);
   const startCoordsRef = useRef<string | undefined>();
+  const lockAxisRef = useRef<'x' | 'y'>();
   const [endCoords, setEndCoords] = useState<string | undefined>();
   const draggingRef = useRef<boolean>(false);
   const maxLength = useAppSelector((state) => state.settings.maxShipLength) - 1;
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    if (tempShip) {
+    if (temporaryShip) {
       return;
     }
 
     startCoordsRef.current = undefined;
     setEndCoords(undefined);
-  }, [tempShip]);
+  }, [temporaryShip]);
 
   useEffect(() => {
     placingRef.current = placing;
@@ -34,57 +36,87 @@ export const useEditShip = () => {
 
   const ships = useAppSelector((state) => state.game.ships);
 
-  const segmentsHash = useMemo(() => {
-    const result = new Set();
-    ships.forEach((ship) => {
-      ship.segments.forEach((segment) => {
-        result.add(`${segment.x}-${segment.y}`);
+  const segmentsMap = useMemo(() => {
+    const result = new Map<string, number>();
+    ships
+      .filter((s) => s.id !== editing)
+      .forEach((ship) => {
+        ship.segments.forEach((segment) => {
+          result.set(`${segment.x}-${segment.y}`, ship.id);
+        });
       });
-    });
     return result;
-  }, [ships]);
+  }, [ships, editing]);
 
-  const temporaryShip = useMemo((): Ship | undefined => {
+  useEffect(() => {
     if (!startCoordsRef.current || !endCoords) {
       return;
     }
 
-    const [startX, startY] = startCoordsRef.current.split('-').map((n) => Number(n));
-    const [endX, endY] = endCoords.split('-').map((n) => Number(n));
+    const [sX, sY] = startCoordsRef.current.split('-').map((n) => Number(n));
+    const [eX, eY] = endCoords.split('-').map((n) => Number(n));
+    let segments: ShipSegment[] = [];
+    const startX = Math.min(sX, ...segments.map((s) => s.x));
+    const endX = Math.max(eX, ...segments.map((s) => s.x));
+    const startY = Math.min(sY, ...segments.map((s) => s.y));
+    const endY = Math.max(eY, ...segments.map((s) => s.y));
     const xRange = Math.abs(startX - endX);
     const yRange = Math.abs(startY - endY);
-    let segments: ShipSegment[] = [];
-    if (xRange > yRange) {
+    let existingSegments = new Set<string>();
+    if (editing) {
+      const ship = ships.find((s) => s.id === editing);
+      if (ship) {
+        segments = [...ship.segments];
+        segments.forEach((s) => existingSegments.add(`${s.x}-${s.y}`));
+      }
+    }
+    const doX = () => {
       for (let x = Math.min(startX, endX); x < Math.max(startX, endX) + 1; x++) {
+        if (existingSegments.has(`${x}-${startY}`)) {
+          continue;
+        }
         segments.push({
-          originalCost: 10,
           x,
           y: startY,
+          new: true,
         });
       }
-    } else {
+    };
+    const doY = () => {
       for (let y = Math.min(startY, endY); y < Math.max(startY, endY) + 1; y++) {
+        if (existingSegments.has(`${startX}-${y}`)) {
+          continue;
+        }
         segments.push({
-          originalCost: 10,
           x: startX,
           y,
+          new: true,
         });
       }
+    };
+    if (lockAxisRef.current === 'x') {
+      doX();
+    } else if (lockAxisRef.current === 'y') {
+      doY();
+    } else if (xRange > yRange) {
+      doX();
+    } else {
+      doY();
     }
     let [invalid, invalidReason] = ((): [boolean, string?] => {
       if (Math.max(xRange, yRange) > maxLength) {
         return [true, `Ship is longer than max length of ${maxLength + 1}`];
       }
 
-      if (Math.max(xRange, yRange) < 2) {
+      if (segments.length < 3) {
         return [true, 'Ship must be a minimum length of 3'];
       }
 
-      if (segments.some((segment) => segmentsHash.has(`${segment.x}-${segment.y}`))) {
+      if (segments.some((segment) => segmentsMap.has(`${segment.x}-${segment.y}`))) {
         return [true, 'Ship must not intercept any other ships'];
       }
 
-      if (segments.length > remainingSegments) {
+      if (segments.filter((s) => s.new).length > remainingSegments) {
         return [true, 'You do not have enough segments. Please purchase more!'];
       }
 
@@ -95,28 +127,37 @@ export const useEditShip = () => {
       return [false];
     })();
 
-    return {
-      id: Date.now(),
-      invalid,
-      invalidReason,
-      segments,
-    };
-  }, [endCoords, maxLength, segmentsHash, remainingSegments, size]);
-
-  useEffect(() => {
-    dispatch(setTemporaryShip(temporaryShip));
-  }, [temporaryShip, dispatch]);
+    dispatch(
+      setTemporaryShip({
+        id: Date.now(),
+        invalid,
+        invalidReason,
+        segments,
+      })
+    );
+  }, [endCoords, maxLength, segmentsMap, remainingSegments, size, ships, editing, dispatch]);
 
   //////////////////////////
   //////////////////////////
   //////   HANDLERS  ///////
   //////////////////////////
   //////////////////////////
-  const onStart = useCallback((coords: string) => {
-    startCoordsRef.current = coords;
-    draggingRef.current = true;
-    setEndCoords(coords);
-  }, []);
+  const onStart = useCallback(
+    (coords: string) => {
+      startCoordsRef.current = coords;
+      draggingRef.current = true;
+      setEndCoords(coords);
+      let shipId = segmentsMap.get(coords);
+      dispatch(selectShip(shipId));
+      const ship = ships.find((s) => s.id === shipId);
+      if (shipId && ship) {
+        lockAxisRef.current = ship.segments[0].x === ship.segments[1].x ? 'y' : 'x';
+      } else {
+        lockAxisRef.current = undefined;
+      }
+    },
+    [dispatch, segmentsMap, ships]
+  );
 
   const onMove = useCallback((coords: string) => {
     setEndCoords(coords);

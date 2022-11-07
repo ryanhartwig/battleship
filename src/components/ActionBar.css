@@ -16,6 +16,7 @@
   flex-wrap: nowrap;
   height: 32px;
   flex-direction: row;
+  height: fit-content;
 }
 
 .info-box > div {

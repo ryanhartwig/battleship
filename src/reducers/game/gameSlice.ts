@@ -52,7 +52,7 @@ interface GameState {
 }
 
 const initialState: GameState = {
-  version: 1,
+  version: 2,
   cash: 5000,
   ships: [],
   placeMode: false,
@@ -104,7 +104,7 @@ export const gameSlice = createSlice({
       state.ships.push(action.payload);
       delete state.editingShip;
     },
-    selectShip: (state, action: PayloadAction<number>) => {
+    selectShip: (state, action: PayloadAction<number | undefined>) => {
       state.editingShip = action.payload;
     },
     setTemporaryShip: (state, action: PayloadAction<Ship | undefined>) => {
@@ -114,7 +114,9 @@ export const gameSlice = createSlice({
       if (!state.temporaryShip) {
         return;
       }
-      state.inventory.segment -= state.temporaryShip.segments.length;
+      state.inventory.segment -= state.temporaryShip.segments.filter((s) => s.new).length;
+      state.temporaryShip.segments = state.temporaryShip.segments.map((s) => ({ x: s.x, y: s.y }));
+      state.ships = state.ships.filter((s) => s.id !== state.editingShip);
       state.ships.push(state.temporaryShip);
       state.temporaryShip = undefined;
     },

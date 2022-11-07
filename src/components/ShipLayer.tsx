@@ -47,10 +47,14 @@ export const ShipItem: React.FC<ShipItemProps> = ({ ship, unselectable, creating
 
 export const ShipLayer = () => {
   const ships = useAppSelector((s) => s.game.ships);
+  const editing = useAppSelector((s) => s.game.editingShip);
   const placeMode = useAppSelector((s) => s.game.placeMode);
   return (
     <>
       {ships.map((ship) => {
+        if (ship.id === editing) {
+          return <div key={ship.id} />;
+        }
         return <ShipItem ship={ship} unselectable={!placeMode} key={ship.id} />;
       })}
     </>

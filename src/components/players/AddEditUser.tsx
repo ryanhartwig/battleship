@@ -20,6 +20,12 @@ export const AddEditUser = ({ add = false }: AddEditUserProps) => {
 
   const size: SemanticSIZES = add ? 'medium' : 'tiny';
 
+  useEffect(() => {
+    if (open) {
+      document.getElementById('setup-users-name')?.focus();
+    }
+  }, [open]);
+
   const addPlayer = useCallback(() => {
     const user = {
       name,
@@ -36,6 +42,10 @@ export const AddEditUser = ({ add = false }: AddEditUserProps) => {
     setName('');
     setPlaceholder('');
     setInitial('');
+
+    setTimeout(() => {
+      document.getElementById('setup-users-name')?.focus();
+    });
   }, [dispatch, name, initial, placeholder, add]);
 
   // Set initials (placeholder)

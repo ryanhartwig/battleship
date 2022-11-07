@@ -24,7 +24,6 @@ export const Inventory = () => {
 
   return (
     <div className="inventory-wrapper">
-      {/* <p>t</p> */}
       <div className="items-wrapper">
         {items.map((item) => {
           const Icon = itemIcons[item.type];

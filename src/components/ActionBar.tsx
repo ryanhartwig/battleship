@@ -27,7 +27,7 @@ export const ActionBar = () => {
         {!placeMode && (
           <div>
             <Label className="action-label" color="green">
-              <p>Cash: ${cash}</p>
+              <p>${cash}</p>
             </Label>
             <Label className="action-label" color="purple">
               <p>Income: ${cash}</p>

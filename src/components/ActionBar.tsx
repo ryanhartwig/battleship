@@ -1,16 +1,22 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { Button, Label } from 'semantic-ui-react';
 import './ActionBar.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { saveTemporaryShip, togglePlaceMode } from '../reducers/game/gameSlice';
+import { saveTemporaryShip, takeIncome, togglePlaceMode } from '../reducers/game/gameSlice';
+import { calculateIncome } from '../utility/calculateIncome';
 
 export const ActionBar = () => {
   const dispatch = useAppDispatch();
 
   const placeMode = useAppSelector((s) => s.game.placeMode);
+  const ships = useAppSelector((s) => s.game.ships);
   const temporaryShip = useAppSelector((s) => s.game.temporaryShip);
 
   const cash = useAppSelector((s) => s.game.cash);
+
+  const income = useMemo(() => {
+    return calculateIncome(ships);
+  }, [ships]);
 
   const onPlaceSegments = useCallback(() => {
     dispatch(togglePlaceMode());
@@ -18,6 +24,10 @@ export const ActionBar = () => {
 
   const onSave = useCallback(() => {
     dispatch(saveTemporaryShip());
+  }, [dispatch]);
+
+  const onIncome = useCallback(() => {
+    dispatch(takeIncome());
   }, [dispatch]);
 
   return (
@@ -29,8 +39,8 @@ export const ActionBar = () => {
             <Label className="action-label" color="green">
               <p>${cash}</p>
             </Label>
-            <Label className="action-label" color="purple">
-              <p>Income: ${cash}</p>
+            <Label onClick={onIncome} className="action-label income" color="purple">
+              <p>Income: ${income}</p>
             </Label>
           </div>
         )}

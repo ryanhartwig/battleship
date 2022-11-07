@@ -1,11 +1,11 @@
 import { Button, Container, Segment } from 'semantic-ui-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 
-import './Setup.css';
+import './Players.css';
 import { removeUser } from '../../reducers/game/gameSlice';
 import { AddEditUser } from './AddEditUser';
 
-export const Setup = () => {
+export const Players = () => {
   const dispatch = useAppDispatch();
 
   const { self, opponents } = useAppSelector((s) => s.game.users);

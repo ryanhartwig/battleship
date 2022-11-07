@@ -2,8 +2,8 @@ import { useCallback, useMemo } from 'react';
 import { Button, Label } from 'semantic-ui-react';
 import './ActionBar.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
-import { saveTemporaryShip, takeIncome, togglePlaceMode } from '../reducers/game/gameSlice';
 import { calculateIncome } from '../utility/calculateIncome';
+import { toggleShipVisibility, togglePlaceMode, saveTemporaryShip, takeIncome } from '../reducers/game/gameSlice';
 
 export const ActionBar = () => {
   const dispatch = useAppDispatch();
@@ -18,7 +18,11 @@ export const ActionBar = () => {
     return calculateIncome(ships);
   }, [ships]);
 
-  const onPlaceSegments = useCallback(() => {
+  const onToggleVisibility = useCallback(() => {
+    dispatch(toggleShipVisibility());
+  }, [dispatch]);
+
+  const onTogglePlaceMode = useCallback(() => {
     dispatch(togglePlaceMode());
   }, [dispatch]);
 
@@ -34,7 +38,7 @@ export const ActionBar = () => {
     <div className="action-bar">
       <div className="info-box">
         {/* Left */}
-        {!placeMode && (
+        {!placeMode ? (
           <div>
             <Label className="action-label" color="green">
               <p>${cash}</p>
@@ -43,23 +47,28 @@ export const ActionBar = () => {
               <p>Income: ${income}</p>
             </Label>
           </div>
+        ) : (
+          <div />
         )}
 
         {/* Right */}
         <div>
           {placeMode ? (
             <div style={{ display: 'flex', alignItems: 'center' }}>
-              <Button secondary onClick={onPlaceSegments}>
+              {placeMode && temporaryShip?.invalidReason && <p style={{ color: 'rgba(255,0,0,.8)', marginBottom: 0, marginRight: '6px' }}>{temporaryShip.invalidReason}</p>}
+              <Button secondary onClick={onTogglePlaceMode}>
                 Cancel
               </Button>
               <Button primary disabled={!temporaryShip || temporaryShip.invalid} onClick={onSave}>
                 Place
               </Button>
-              {placeMode && temporaryShip?.invalidReason && <p style={{ color: 'rgba(255,0,0,.8)' }}>{temporaryShip.invalidReason}</p>}
+              <Button style={{ marginRight: 0 }} color="green" onClick={onToggleVisibility}>
+                Toggle Ships
+              </Button>
             </div>
           ) : (
-            <Button style={{ marginRight: 0, lineHeight: 0.7, padding: '11px 8px' }} color="green" onClick={onPlaceSegments}>
-              Place Segment(s)
+            <Button style={{ marginRight: 0 }} color="green" onClick={onToggleVisibility}>
+              Toggle Ships
             </Button>
           )}
         </div>

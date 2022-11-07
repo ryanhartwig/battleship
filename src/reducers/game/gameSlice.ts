@@ -37,6 +37,10 @@ interface GameState {
    * down new segments or not.
    */
   placeMode: boolean;
+  /**
+   * Hides your placed ships, incase you're playing near some sketchy people.
+   */
+  shipsVisible: boolean;
   levels: Record<UpgradeLevel, number>;
   /**
    * Records any items the player has purchased
@@ -53,10 +57,11 @@ interface GameState {
 }
 
 const initialState: GameState = {
-  version: 2,
+  version: 5,
   cash: 0,
   ships: [],
   placeMode: false,
+  shipsVisible: true,
   levels: {
     movement: 0,
     pillage: 0,
@@ -100,6 +105,9 @@ export const gameSlice = createSlice({
       state.placeMode = !state.placeMode;
       delete state.temporaryShip;
       delete state.editingShip;
+    },
+    toggleShipVisibility: (state) => {
+      state.shipsVisible = !state.shipsVisible;
     },
     addShip: (state, action: PayloadAction<Ship>) => {
       state.ships.push(action.payload);
@@ -189,6 +197,6 @@ export const gameSlice = createSlice({
   },
 });
 
-export const { togglePlaceMode, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome } = gameSlice.actions;
+export const { togglePlaceMode, toggleShipVisibility, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome } = gameSlice.actions;
 
 export default gameSlice.reducer;

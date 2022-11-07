@@ -49,10 +49,12 @@ export const ShipLayer = () => {
   const ships = useAppSelector((s) => s.game.ships);
   const editing = useAppSelector((s) => s.game.editingShip);
   const placeMode = useAppSelector((s) => s.game.placeMode);
+  const shipsVisible = useAppSelector((s) => s.game.shipsVisible);
+
   return (
     <>
       {ships.map((ship) => {
-        if (ship.id === editing) {
+        if (ship.id === editing || !shipsVisible) {
           return <div key={ship.id} />;
         }
         return <ShipItem ship={ship} unselectable={!placeMode} key={ship.id} />;

@@ -252,6 +252,6 @@ export const gameSlice = createSlice({
   },
 });
 
-export const { togglePlaceMode, toggleShipVisibility, skipTurn, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome, saveAction } = gameSlice.actions;
+export const { togglePlaceMode, toggleShipVisibility, skipTurn, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome, addAction, removeAction } = gameSlice.actions;
 
 export default gameSlice.reducer;

@@ -220,7 +220,7 @@ export const gameSlice = createSlice({
           .forEach((hit) => {
             bounty += pillage.earningsPerSegment;
             if (hit.sunk) {
-              bountySegments += 1;
+              bountySegments += pillage.segmentRewardOnSink;
             }
           });
         state.cash = c(state.cash + bounty);
@@ -249,7 +249,7 @@ export const gameSlice = createSlice({
           .forEach((h) => {
             bounty += pillage.earningsPerSegment;
             if (h.sunk) {
-              bountySegments += 1;
+              bountySegments += pillage.segmentRewardOnSink;
             }
           });
         state.cash = c(state.cash - bounty);

@@ -47,6 +47,7 @@ interface GameState {
    * Records any items the player has purchased
    */
   inventory: Inventory;
+  skip: number;
   actions: BoardAction[];
   /**
    * Records buyable items
@@ -79,6 +80,7 @@ const initialState: GameState = {
     directional: 0,
     atomic: 0,
   },
+  skip: 1,
   store: items,
   actions: [],
   users: {
@@ -112,6 +114,10 @@ export const gameSlice = createSlice({
     },
     toggleShipVisibility: (state) => {
       state.shipsVisible = !state.shipsVisible;
+    },
+    skipTurn: (state) => {
+      state.cash = c(state.cash - state.skip);
+      state.skip = state.skip + 1;
     },
     addShip: (state, action: PayloadAction<Ship>) => {
       state.ships.push(action.payload);
@@ -246,6 +252,6 @@ export const gameSlice = createSlice({
   },
 });
 
-export const { togglePlaceMode, toggleShipVisibility, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome, addAction, removeAction } = gameSlice.actions;
+export const { togglePlaceMode, toggleShipVisibility, skipTurn, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome, saveAction } = gameSlice.actions;
 
 export default gameSlice.reducer;

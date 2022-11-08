@@ -3,7 +3,8 @@ import { useAppDispatch, useAppSelector } from '../app/hooks';
 import './Arsenal.css';
 import { itemIcons } from '../utility/storeIcons';
 import { useCallback, useMemo } from 'react';
-import { buyItem } from '../reducers/game/gameSlice';
+import { buyItem, skipTurn } from '../reducers/game/gameSlice';
+import { c } from '../utility/c';
 
 export const Arsenal = () => {
   const dispatch = useAppDispatch();
@@ -12,6 +13,8 @@ export const Arsenal = () => {
     return storeItems.filter((i) => i.type !== 'missile');
   }, [storeItems]);
   const shipLevel = useAppSelector((state) => state.game.levels.ship);
+
+  const cash = useAppSelector((s) => s.game.cash);
 
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
@@ -23,9 +26,18 @@ export const Arsenal = () => {
     [dispatch]
   );
 
+  const skip = useAppSelector((s) => s.game.skip);
+
+  const onSkipTurn = useCallback(() => {
+    dispatch(skipTurn());
+  }, [dispatch]);
+
   return (
-    <Container>
-      <div className="store">
+    <Container style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>
+      <Button onClick={onSkipTurn} disabled={c(cash - skip) < 0}>
+        Skip Turn (${skip})
+      </Button>
+      <div className="store" style={{ marginTop: '10px' }}>
         {items.map((item) => {
           const Icon = itemIcons[item.type];
           let style = item.type === 'directional' ? { transform: 'rotate(270deg)' } : undefined;

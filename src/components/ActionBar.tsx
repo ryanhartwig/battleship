@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from 'react';
-import { Button, Label } from 'semantic-ui-react';
+import { useCallback, useMemo, useState } from 'react';
+import { Button, Label, Modal } from 'semantic-ui-react';
 import './ActionBar.css';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { calculateIncome } from '../utility/calculateIncome';
@@ -11,6 +11,7 @@ export const ActionBar = () => {
   const placeMode = useAppSelector((s) => s.game.placeMode);
   const ships = useAppSelector((s) => s.game.ships);
   const temporaryShip = useAppSelector((s) => s.game.temporaryShip);
+  const [openIncomeConfirmation, setOpenIncomeConfirmation] = useState(false);
 
   const cash = useAppSelector((s) => s.game.cash);
 
@@ -31,7 +32,12 @@ export const ActionBar = () => {
   }, [dispatch]);
 
   const onIncome = useCallback(() => {
+    setOpenIncomeConfirmation(true);
+  }, []);
+
+  const onConfirmIncome = useCallback(() => {
     dispatch(takeIncome());
+    setOpenIncomeConfirmation(false);
   }, [dispatch]);
 
   return (
@@ -50,6 +56,19 @@ export const ActionBar = () => {
         ) : (
           <div />
         )}
+
+        <Modal open={openIncomeConfirmation} onClose={() => setOpenIncomeConfirmation(false)}>
+          <Modal.Header>Confirm Income</Modal.Header>
+          <Modal.Content>You only take income at the start of your turn. Make sure it's your turn!</Modal.Content>
+          <Modal.Actions>
+            <Button secondary onClick={() => setOpenIncomeConfirmation(false)}>
+              Cancel
+            </Button>
+            <Button primary onClick={onConfirmIncome}>
+              Take Income
+            </Button>
+          </Modal.Actions>
+        </Modal>
 
         {/* Right */}
         <div>

@@ -113,29 +113,17 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   const setRangeModifier = useCallback((type: RangeModifierType) => {
     setAction((a) => {
       let nextType = a.weapons[1] === type ? undefined : type;
-      let weapons = [a.weapons[0], nextType];
-
-      console.log('in setRangeModifier');
-      console.log('incoming type: ', type);
-      console.log('weapons: ', weapons);
-      console.log({ ...a, weapons: [a.weapons[0], nextType] });
-      return { ...a, weapons: [a.weapons[0], nextType] };
+      return {
+        ...a,
+        weapons: [a.weapons[0], nextType],
+      };
     });
   }, []);
   const setWeaponType = useCallback((type: WeaponType) => {
-    setAction((a) => {
-      let weapons = [type, a.weapons[1]];
-
-      console.log('in setWeaponType');
-      console.log('incoming type: ', type);
-      console.log('weapons: ', weapons);
-
-      console.log({ ...a, weapons: [type, a.weapons[1]] });
-      return {
-        ...a,
-        weapons: [type, a.weapons[1]],
-      };
-    });
+    setAction((a) => ({
+      ...a,
+      weapons: [type, a.weapons[1]],
+    }));
   }, []);
 
   return (

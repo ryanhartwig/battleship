@@ -10,14 +10,15 @@ export const ActionBar = () => {
 
   const placeMode = useAppSelector((s) => s.game.placeMode);
   const ships = useAppSelector((s) => s.game.ships);
+  const actions = useAppSelector((s) => s.game.actions);
   const temporaryShip = useAppSelector((s) => s.game.temporaryShip);
   const [openIncomeConfirmation, setOpenIncomeConfirmation] = useState(false);
 
   const cash = useAppSelector((s) => s.game.cash);
 
   const income = useMemo(() => {
-    return calculateIncome(ships);
-  }, [ships]);
+    return calculateIncome(ships, actions);
+  }, [ships, actions]);
 
   const onToggleVisibility = useCallback(() => {
     dispatch(toggleShipVisibility());

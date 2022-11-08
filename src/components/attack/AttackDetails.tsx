@@ -1,10 +1,11 @@
 import { SetAttackType } from './SetAttackType';
 import { GrAdd } from 'react-icons/gr';
 import React, { useCallback, useMemo } from 'react';
+import './AttackDetails.css';
 import { itemIcons } from '../../utility/storeIcons';
 import { BoardAction } from '../../types/action';
 import { useAppSelector } from '../../app/hooks';
-import { Header, Menu } from 'semantic-ui-react';
+import { Checkbox, Header, Menu } from 'semantic-ui-react';
 
 interface AttackDetailsProps {
   action: BoardAction;
@@ -29,6 +30,13 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
     [action]
   );
 
+  const isPlayerSunk = useCallback(
+    (id: number) => {
+      return !!action.hits?.find((h) => h.userId === id)?.sunk;
+    },
+    [action]
+  );
+
   const onToggleHit = useCallback(
     (id: number) => {
       setAction((a) => {
@@ -43,6 +51,29 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
         } else {
           next.hits.push({ userId: id });
         }
+
+        return next;
+      });
+    },
+    [setAction]
+  );
+
+  const onToggleSunk = useCallback(
+    (e: any, id: number) => {
+      e.stopPropagation();
+      setAction((a) => {
+        const next = JSON.parse(JSON.stringify(a)) as BoardAction;
+        if (!next.hits) {
+          next.hits = [];
+        }
+
+        const hitIndex = next.hits?.findIndex((h) => h.userId === id);
+        if (hitIndex > -1) {
+          next.hits[hitIndex].sunk = !next.hits[hitIndex].sunk;
+        } else {
+          next.hits.push({ userId: id, sunk: true });
+        }
+
         return next;
       });
     },
@@ -74,13 +105,15 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
         Players Hit
       </Header>
       <Menu vertical color="green">
-        <Menu.Item disabled={readOnly} active={isPlayerHit(users.self.id)} onClick={() => {}} color={'green'}>
+        <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(users.self.id)} onClick={() => {}} color={'green'}>
           {users.self.name}
+          <Checkbox label="Sunk" checked={isPlayerSunk(users.self.id)} onClick={(e) => onToggleSunk(e, users.self.id)} />
         </Menu.Item>
         {users.opponents.map((user) => {
           return (
-            <Menu.Item disabled={readOnly} active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>
+            <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>
               {user.name}
+              <Checkbox label="Sunk" checked={isPlayerSunk(user.id)} onClick={(e) => onToggleSunk(e, user.id)} />
             </Menu.Item>
           );
         })}

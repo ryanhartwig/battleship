@@ -96,6 +96,7 @@ const initialState: GameState = {
 let savedState: GameState | undefined;
 try {
   savedState = JSON.parse(localStorage.getItem('game') as string) as GameState;
+  savedState.inventory.missile = Infinity;
   if (savedState.version !== initialState.version) {
     savedState = undefined;
   }
@@ -204,7 +205,7 @@ export const gameSlice = createSlice({
       state.levels[upgrade] += 1;
     },
     takeIncome: (state) => {
-      const income = calculateIncome(state.ships);
+      const income = calculateIncome(state.ships, state.actions);
       state.cash = c(state.cash + income);
     },
     addAction: (state, { payload: [_action, settings] }: PayloadAction<[BoardAction, SettingsState]>) => {
@@ -212,13 +213,18 @@ export const gameSlice = createSlice({
       if (action.attacker === state.users.self.id) {
         action.pillage = state.levels.pillage;
         const pillage = settings.upgrades.pillage[state.levels.pillage];
-        let bounty = 0;
+        let bounty = 0,
+          bountySegments = 0;
         action.hits
           .filter((h) => h.userId !== state.users.self.id)
           .forEach((hit) => {
             bounty += pillage.earningsPerSegment;
+            if (hit.sunk) {
+              bountySegments += 1;
+            }
           });
         state.cash = c(state.cash + bounty);
+        state.inventory.segment += bountySegments;
         const [weapon, range] = action.weapons;
         state.inventory[weapon] -= 1;
         if (range) {
@@ -235,14 +241,19 @@ export const gameSlice = createSlice({
       }
 
       if (action.attacker === state.users.self.id) {
-        let bounty = 0;
+        let bounty = 0,
+          bountySegments = 0;
         const pillage = settings.upgrades.pillage[action.pillage || 0];
         action.hits
           .filter((h) => h.userId !== state.users.self.id)
-          .forEach(() => {
+          .forEach((h) => {
             bounty += pillage.earningsPerSegment;
+            if (h.sunk) {
+              bountySegments += 1;
+            }
           });
         state.cash = c(state.cash - bounty);
+        state.inventory.segment -= bountySegments;
         const [weapon, range] = action.weapons;
         state.inventory[weapon] += 1;
         if (range) {

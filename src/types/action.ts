@@ -15,6 +15,9 @@ interface Hit {
    * The user ID that was hit
    */
   userId: number;
+  /**
+   * Whether this hit caused this player's ship to sink.
+   */
   sunk?: boolean;
 }
 
@@ -27,6 +30,11 @@ export interface AttackAction {
   x: number;
   y: number;
   attacker: number;
+  /**
+   * The pillage level when this hit was incurred.
+   * Used for editing / removing actions.
+   */
+  pillage?: number;
   /**
    * Defaults to Missile
    */

@@ -11,6 +11,7 @@ export const useEditShip = () => {
   const placing = useAppSelector((state) => state.game.placeMode);
   const temporaryShip = useAppSelector((state) => state.game.temporaryShip);
   const editing = useAppSelector((s) => s.game.editingShip);
+  const actions = useAppSelector((s) => s.game.actions);
   const size = useAppSelector((state) => state.settings.size + state.game.levels.movement);
   const placingRef = useRef(placing);
   const remainingSegments = useAppSelector((state) => state.game.inventory.segment);
@@ -47,6 +48,18 @@ export const useEditShip = () => {
       });
     return result;
   }, [ships, editing]);
+  const attacksSet = useMemo(() => {
+    const result = new Set<string>();
+    actions
+      .filter((a) => a.type === 'attack')
+      .forEach(({ x, y, hits }) => {
+        result.add(`${x}-${y}`);
+        hits.forEach(({ oX, oY }) => {
+          result.add(`${x + (oX ?? 0)}-${y + (oY ?? 0)}`);
+        });
+      });
+    return result;
+  }, [actions]);
 
   useEffect(() => {
     if (!startCoordsRef.current || !endCoords) {
@@ -124,6 +137,10 @@ export const useEditShip = () => {
         return [true, 'You can not build in the grey zone. Upgrade your movement!'];
       }
 
+      if (segments.some(({ x, y }) => attacksSet.has(`${x}-${y}`))) {
+        return [true, 'You can not build on destroyed tiles / ships.'];
+      }
+
       return [false];
     })();
 
@@ -135,7 +152,7 @@ export const useEditShip = () => {
         segments,
       })
     );
-  }, [endCoords, maxLength, segmentsMap, remainingSegments, size, ships, editing, dispatch]);
+  }, [endCoords, maxLength, segmentsMap, attacksSet, remainingSegments, size, ships, editing, dispatch]);
 
   //////////////////////////
   //////////////////////////

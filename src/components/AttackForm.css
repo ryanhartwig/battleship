@@ -1,0 +1,41 @@
+.attack-types {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 100%;
+
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.attack-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.icon-wrapper {
+  cursor: pointer;
+  border: 1px solid rgba(0, 0, 0, 0.6);
+  border-radius: 4px;
+  padding: 20px;
+  margin: 4px;
+}
+
+.icon-wrapper.active {
+  border: 2px solid green;
+}
+
+.icon-wrapper .item-icon {
+  scale: 1;
+  transition: scale 0.1s linear;
+}
+
+.icon-wrapper:hover .item-icon {
+  scale: 1.1;
+}
+
+.icon-wrapper > * {
+  font-size: 40px;
+}

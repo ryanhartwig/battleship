@@ -1,0 +1,27 @@
+.attack-cell {
+  background-color: rgba(255, 0, 0, 0.5);
+  border: rgba(255, 0, 0, 0.5);
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+.attack-cell.miss {
+  background-color: rgba(255, 153, 0, 0.558);
+}
+
+.attack-cell .attacker {
+  background-color: white;
+  border-radius: 2px;
+  padding: 0 2px;
+  font-size: 6px;
+  line-height: 6px;
+}
+
+.attack-cell .hits {
+  background-color: white;
+  border-radius: 2px;
+  font-size: 8px;
+  line-height: 8px;
+}

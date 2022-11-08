@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { Inventory, Item } from '../../types/items';
 import { Ship } from '../../types/ship';
+import { BoardAction } from '../../types/action';
 import { Upgrade } from '../../types/upgrades';
 import { User } from '../../types/user';
 import { c } from '../../utility/c';
@@ -46,6 +47,7 @@ interface GameState {
    * Records any items the player has purchased
    */
   inventory: Inventory;
+  actions: BoardAction[];
   /**
    * Records buyable items
    */
@@ -57,7 +59,7 @@ interface GameState {
 }
 
 const initialState: GameState = {
-  version: 5,
+  version: 8,
   cash: 0,
   ships: [],
   placeMode: false,
@@ -78,11 +80,12 @@ const initialState: GameState = {
     atomic: 0,
   },
   store: items,
+  actions: [],
   users: {
     self: {
       name: 'Me',
       initial: 'Me',
-      id: Date.now().toString(),
+      id: Date.now(),
     },
     opponents: [],
   },
@@ -100,7 +103,7 @@ try {
 
 export const gameSlice = createSlice({
   name: 'game',
-  initialState: process.env.NODE_ENV === 'production' ? savedState || initialState : initialState,
+  initialState: savedState || initialState,
   reducers: {
     togglePlaceMode: (state) => {
       state.placeMode = !state.placeMode;
@@ -133,7 +136,7 @@ export const gameSlice = createSlice({
     addUser: (state, action: PayloadAction<User>) => {
       state.users.opponents.push(action.payload);
     },
-    removeUser: (state, action: PayloadAction<string>) => {
+    removeUser: (state, action: PayloadAction<number>) => {
       state.users.opponents = state.users.opponents.filter(({ id }) => id !== action.payload);
     },
     editMe: (state, action: PayloadAction<User>) => {
@@ -195,9 +198,28 @@ export const gameSlice = createSlice({
       const income = calculateIncome(state.ships);
       state.cash = c(state.cash + income);
     },
+    saveAction: (state, act: PayloadAction<[BoardAction, SettingsState]>) => {
+      const [action, settings] = act.payload;
+      let actionIndex = state.actions.findIndex((a) => a.id === action.id);
+      const pillage = settings.upgrades.pillage[state.levels.pillage];
+      if (actionIndex < 0) {
+        if (action.attacker === state.users.self.id) {
+          let bounty = 0;
+          action.hits
+            .filter((h) => h.userId !== state.users.self.id)
+            .forEach((hit) => {
+              bounty += pillage.earningsPerSegment;
+            });
+          state.cash = c(state.cash + bounty);
+        }
+        state.actions.push(action);
+      } else {
+        state.actions.splice(actionIndex, 1, action);
+      }
+    },
   },
 });
 
-export const { togglePlaceMode, toggleShipVisibility, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome } = gameSlice.actions;
+export const { togglePlaceMode, toggleShipVisibility, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome, saveAction } = gameSlice.actions;
 
 export default gameSlice.reducer;

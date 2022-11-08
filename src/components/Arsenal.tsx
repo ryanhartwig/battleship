@@ -7,7 +7,7 @@ import { buyItem } from '../reducers/game/gameSlice';
 
 export const Arsenal = () => {
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state) => state.game.store);
+  const items = useAppSelector((state) => state.game.store).filter((i) => i.type !== 'missile');
   const shipLevel = useAppSelector((state) => state.game.levels.ship);
 
   const onClick = useCallback(

@@ -30,7 +30,7 @@ export const AddEditUser = ({ add = false }: AddEditUserProps) => {
     const user = {
       name,
       initial: initial || placeholder,
-      id: Date.now().toString(),
+      id: Date.now(),
     };
     if (add) {
       dispatch(addUser(user));

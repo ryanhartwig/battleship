@@ -2,6 +2,7 @@ interface Buyable {
   cost: number;
   name: string;
   description: string;
+  category: 'weapon' | 'rangemodifier' | 'item';
 }
 
 interface Segment extends Buyable {
@@ -49,3 +50,5 @@ export interface Inventory {
 }
 
 export type ItemType = 'segment' | 'missile' | 'ranged' | 'longranged' | 'bomb' | 'directional' | 'atomic';
+export type WeaponType = 'missile' | 'bomb' | 'directional' | 'atomic';
+export type RangeModifierType = 'ranged' | 'longranged';

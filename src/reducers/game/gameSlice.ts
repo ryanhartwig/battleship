@@ -60,7 +60,7 @@ interface GameState {
 }
 
 const initialState: GameState = {
-  version: 8,
+  version: 12,
   cash: 0,
   ships: [],
   placeMode: false,
@@ -204,24 +204,50 @@ export const gameSlice = createSlice({
       const income = calculateIncome(state.ships);
       state.cash = c(state.cash + income);
     },
-    saveAction: (state, act: PayloadAction<[BoardAction, SettingsState]>) => {
-      const [action, settings] = act.payload;
-      let actionIndex = state.actions.findIndex((a) => a.id === action.id);
-      const pillage = settings.upgrades.pillage[state.levels.pillage];
-      if (actionIndex < 0) {
-        if (action.attacker === state.users.self.id) {
-          let bounty = 0;
-          action.hits
-            .filter((h) => h.userId !== state.users.self.id)
-            .forEach((hit) => {
-              bounty += pillage.earningsPerSegment;
-            });
-          state.cash = c(state.cash + bounty);
+    addAction: (state, { payload: [_action, settings] }: PayloadAction<[BoardAction, SettingsState]>) => {
+      const action = { ..._action };
+      if (action.attacker === state.users.self.id) {
+        action.pillage = state.levels.pillage;
+        const pillage = settings.upgrades.pillage[state.levels.pillage];
+        let bounty = 0;
+        action.hits
+          .filter((h) => h.userId !== state.users.self.id)
+          .forEach((hit) => {
+            bounty += pillage.earningsPerSegment;
+          });
+        state.cash = c(state.cash + bounty);
+        const [weapon, range] = action.weapons;
+        state.inventory[weapon] -= 1;
+        if (range) {
+          state.inventory[range] -= 1;
         }
-        state.actions.push(action);
-      } else {
-        state.actions.splice(actionIndex, 1, action);
       }
+      state.actions.push(action);
+    },
+    removeAction: (state, { payload: [actionId, settings] }: PayloadAction<[number, SettingsState]>) => {
+      const actionIndex = state.actions.findIndex((a) => a.id === actionId);
+      const action = state.actions[actionIndex];
+      if (!action) {
+        return state;
+      }
+
+      if (action.attacker === state.users.self.id) {
+        let bounty = 0;
+        const pillage = settings.upgrades.pillage[action.pillage || 0];
+        action.hits
+          .filter((h) => h.userId !== state.users.self.id)
+          .forEach(() => {
+            bounty += pillage.earningsPerSegment;
+          });
+        state.cash = c(state.cash - bounty);
+        const [weapon, range] = action.weapons;
+        state.inventory[weapon] += 1;
+        if (range) {
+          state.inventory[range] += 1;
+        }
+      }
+
+      state.actions.splice(actionIndex, 1);
     },
   },
 });

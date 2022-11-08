@@ -1,11 +1,12 @@
 import { useCallback } from 'react';
 import { Button, Card, Container, Table } from 'semantic-ui-react';
-import { useAppDispatch } from '../app/hooks';
+import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { resetSlice } from '../reducers/game/gameSlice';
 import './Rules.css';
 
 export const Rules = () => {
   const dispatch = useAppDispatch();
+  const version = useAppSelector((s) => s.game.version);
   const onReset = useCallback(() => {
     dispatch(resetSlice());
   }, [dispatch]);
@@ -13,7 +14,7 @@ export const Rules = () => {
     <Container>
       <Card style={{ width: '100%' }}>
         <Card.Content>
-          <h2>Game Rules</h2>
+          <h2>Game Rules (v{version})</h2>
           <h2>Your Turn</h2>
           <p>Your turn is broken into 2 phases:</p>
           <ul>

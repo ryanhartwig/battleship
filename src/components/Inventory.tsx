@@ -8,15 +8,7 @@ import './Inventory.css';
 export const Inventory = () => {
   const dispatch = useAppDispatch();
 
-  const missile: Item = {
-    type: 'missile',
-    name: 'Missile',
-    cost: 0,
-    description: 'Regular ship attack',
-  };
-
-  const [segment, ...rest] = useAppSelector((state) => state.game.store);
-  const items: Item[] = [segment, missile, ...rest];
+  const items = useAppSelector((state) => state.game.store);
   const inventory = useAppSelector((state) => state.game.inventory);
   const newSegments = useAppSelector((state) => state.game.temporaryShip?.segments.filter((s) => s.new));
 

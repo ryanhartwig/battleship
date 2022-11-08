@@ -8,8 +8,8 @@ import { ShipItem, ShipLayer } from './ShipLayer';
 import './Board.css';
 import { useBoardSize } from '../hooks/useBoardSize';
 import { Inventory } from './Inventory';
-import { Modal } from 'semantic-ui-react';
-import { characters } from '../utility/data';
+import { AttackForm } from './AttackForm';
+import { AttackLayer } from './AttackLayer';
 
 export const Board = () => {
   const sizePx = useBoardSize();
@@ -20,6 +20,7 @@ export const Board = () => {
 
   const [open, setOpen] = useState<boolean>(false);
   const [coords, setCoords] = useState<string>('');
+
   const onClick = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       if (placeMode) return;
@@ -60,22 +61,14 @@ export const Board = () => {
           return <Field key={`${coords.x}-${coords.y}`} coords={coords} />;
         })}
         <ShipLayer />
+        <AttackLayer />
         {temporaryShip && <ShipItem ship={temporaryShip} unselectable creating />}
       </div>
       <div className="resources">
         <Inventory />
       </div>
 
-      <Modal
-        open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-        dimmer="blurring"
-      >
-        <Modal.Header>{`${characters[Number(coords.split('-')[1])]}${coords.split('-')[0]}`}</Modal.Header>
-        <Modal.Content></Modal.Content>
-      </Modal>
+      {open && <AttackForm coords={coords} open={open} setOpen={setOpen} />}
     </div>
   );
 };

@@ -7,6 +7,7 @@ import './AttackForm.css';
 import { BoardAction } from '../../types/action';
 import { addAction, removeAction } from '../../reducers/game/gameSlice';
 import { AttackDetails } from './AttackDetails';
+import { Ship } from '../../types/ship';
 
 interface AttackFormProps {
   coords: string;
@@ -17,20 +18,32 @@ interface AttackFormProps {
 export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   const [readOnly, setReadOnly] = useState(false);
   const users = useAppSelector((s) => s.game.users);
+  const actions = useAppSelector((s) => s.game.actions);
   const ships = useAppSelector((s) => s.game.ships);
   const settings = useAppSelector((s) => s.settings);
   const dispatch = useAppDispatch();
-  const shipsSet = useMemo(() => {
-    const set = new Set<string>();
+  const shipsMap = useMemo(() => {
+    const map = new Map<string, Ship>();
     ships.forEach((ship) => {
       ship.segments.forEach((segment) => {
-        set.add(`${segment.x}-${segment.y}`);
+        map.set(`${segment.x}-${segment.y}`, ship);
       });
     });
-    return set;
+    return map;
   }, [ships]);
+  const attacksMap = useMemo(() => {
+    const attacks = new Set<string>();
+    actions
+      .filter((a) => a.type === 'attack')
+      .forEach(({ x, y, hits }) => {
+        attacks.add(`${x}-${y}`);
+        hits.forEach(({ oX, oY }) => {
+          attacks.add(`${x + (oX ?? 0)}-${y + (oY ?? 0)}`);
+        });
+      });
+    return attacks;
+  }, [actions]);
 
-  const actions = useAppSelector((s) => s.game.actions);
   const [x, y] = useMemo(() => coords.split('-').map((n) => Number(n)), [coords]);
   const [action, setAction] = useState<BoardAction>({
     id: Date.now(),
@@ -38,10 +51,11 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
     attacker: -1,
     x,
     y,
-    hits: shipsSet.has(coords)
+    hits: shipsMap.has(coords)
       ? [
           {
             userId: users.self.id,
+            sunk: shipsMap.get(coords)?.segments.every((seg) => attacksMap.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y)),
           },
         ]
       : [],
@@ -88,9 +102,9 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
       dimmer="blurring"
       className="cell-modal"
     >
-      <Modal.Header style={{ color: shipsSet.has(coords) ? 'red' : 'black' }}>
+      <Modal.Header style={{ color: shipsMap.has(coords) ? 'red' : 'black' }}>
         {`${characters[y]}${x}`}
-        {shipsSet.has(coords) ? " - YOU'RE HIT" : ''}
+        {shipsMap.has(coords) ? " - YOU'RE HIT" : ''}
       </Modal.Header>
       <Modal.Content>
         <div className="attack-form">

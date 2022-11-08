@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 
-import { useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useAppSelector } from '../app/hooks';
 import { useEditShip } from '../hooks/useEditShip';
 import { Field } from './Field';
@@ -8,14 +8,29 @@ import { ShipItem, ShipLayer } from './ShipLayer';
 import './Board.css';
 import { useBoardSize } from '../hooks/useBoardSize';
 import { Inventory } from './Inventory';
+import { Modal } from 'semantic-ui-react';
+import { characters } from '../utility/data';
 
 export const Board = () => {
   const sizePx = useBoardSize();
 
   const size = useAppSelector((s) => s.settings.size + s.settings.upgrades.move.length - 1);
   const fields = useMemo(() => new Array(size * size).fill(''), [size]);
-
   const placeMode = useAppSelector((state) => state.game.placeMode);
+
+  const [open, setOpen] = useState<boolean>(false);
+  const [coords, setCoords] = useState<string>('');
+  const onClick = useCallback(
+    (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+      if (placeMode) return;
+      setOpen(true);
+      const element = e.target;
+      if (!(element instanceof HTMLDivElement)) return;
+
+      setCoords(element.id);
+    },
+    [placeMode]
+  );
 
   const { onMouseDown, onMouseMove, onMouseUp, onTouchMove, onTouchStart, temporaryShip } = useEditShip();
 
@@ -50,6 +65,17 @@ export const Board = () => {
       <div className="resources">
         <Inventory />
       </div>
+
+      <Modal
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        dimmer="blurring"
+      >
+        <Modal.Header>{`${characters[Number(coords.split('-')[1])]}${coords.split('-')[0]}`}</Modal.Header>
+        <Modal.Content></Modal.Content>
+      </Modal>
     </div>
   );
 };

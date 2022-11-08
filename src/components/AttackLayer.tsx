@@ -33,7 +33,7 @@ const Attack: React.FC<AttackProps> = ({ action, self, opponents }) => {
   }, [action, self, opponents]);
   return (
     <div
-      className={clsx('attack-cell', { miss: hits.length === 0 })}
+      className={clsx('attack-cell', { miss: action.hits.length === 0 })}
       style={{
         gridArea: `${action.y} / ${action.x} / ${action.y} / ${action.x}`,
       }}

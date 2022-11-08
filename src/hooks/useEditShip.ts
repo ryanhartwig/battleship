@@ -104,7 +104,7 @@ export const useEditShip = () => {
       doY();
     }
     let [invalid, invalidReason] = ((): [boolean, string?] => {
-      if (Math.max(xRange, yRange) > maxLength) {
+      if (segments.length - 1 > maxLength) {
         return [true, `Ship is longer than max length of ${maxLength + 1}`];
       }
 

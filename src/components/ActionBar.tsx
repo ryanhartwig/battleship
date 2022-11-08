@@ -86,11 +86,9 @@ export const ActionBar = () => {
               </Button>
             </div>
           ) : (
-            <>
-              <Button style={{ marginRight: 0 }} color="green" onClick={onToggleVisibility}>
-                Toggle Ships
-              </Button>
-            </>
+            <Button style={{ marginRight: 0 }} color="green" onClick={onToggleVisibility}>
+              Toggle Ships
+            </Button>
           )}
         </div>
       </div>

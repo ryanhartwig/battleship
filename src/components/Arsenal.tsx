@@ -29,9 +29,8 @@ export const Arsenal = () => {
   const skip = useAppSelector((s) => s.game.skip);
 
   const onSkipTurn = useCallback(() => {
-    console.log(skip);
     dispatch(skipTurn());
-  }, [dispatch, skip]);
+  }, [dispatch]);
 
   return (
     <Container style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>

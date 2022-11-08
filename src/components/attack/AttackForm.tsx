@@ -5,7 +5,7 @@ import { characters } from '../../utility/data';
 import './AttackForm.css';
 
 import { BoardAction } from '../../types/action';
-import { saveAction } from '../../reducers/game/gameSlice';
+import { addAction, removeAction } from '../../reducers/game/gameSlice';
 import { AttackDetails } from './AttackDetails';
 
 interface AttackFormProps {
@@ -15,6 +15,7 @@ interface AttackFormProps {
 }
 
 export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
+  const [readOnly, setReadOnly] = useState(false);
   const users = useAppSelector((s) => s.game.users);
   const ships = useAppSelector((s) => s.game.ships);
   const settings = useAppSelector((s) => s.settings);
@@ -52,6 +53,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
     const existingAction = actions.find((a) => a.x === x && a.y === y && a.type === 'attack');
     if (existingAction) {
       setAction(existingAction);
+      setReadOnly(true);
     }
   }, [actions, coords]);
 
@@ -66,9 +68,13 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   }, []);
 
   const onSave = useCallback(() => {
-    dispatch(saveAction([action as BoardAction, settings]));
+    dispatch(addAction([action as BoardAction, settings]));
     setOpen(false);
   }, [dispatch, action, settings, setOpen]);
+  const onRemove = useCallback(() => {
+    dispatch(removeAction([action.id, settings]));
+    setOpen(false);
+  }, [dispatch, action.id, settings, setOpen]);
   const actionValid = useMemo(() => {
     return action.attacker > 0;
   }, [action]);
@@ -97,16 +103,20 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
               const user = action.attacker === users.self.id ? users.self : users.opponents.find((u) => u.id === action.attacker);
               return (
                 <Menu vertical size="tiny">
-                  <Menu.Item onClick={onClearAttacker}>{user?.name}</Menu.Item>
+                  <Menu.Item disabled={readOnly} onClick={onClearAttacker}>
+                    {user?.name}
+                  </Menu.Item>
                 </Menu>
               );
             })()
           ) : (
             <Menu vertical size="tiny">
-              <Menu.Item onClick={() => onSetAttacker(users.self.id)}>{users.self.name}</Menu.Item>
+              <Menu.Item disabled={readOnly} onClick={() => onSetAttacker(users.self.id)}>
+                {users.self.name}
+              </Menu.Item>
               {users.opponents.map((user) => {
                 return (
-                  <Menu.Item key={user.id} onClick={() => onSetAttacker(user.id)}>
+                  <Menu.Item disabled={readOnly} key={user.id} onClick={() => onSetAttacker(user.id)}>
                     {user.name}
                   </Menu.Item>
                 );
@@ -115,7 +125,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
           )}
 
           {/* Start of hidden region */}
-          {action.attacker > -1 && <AttackDetails action={action} setAction={setAction} />}
+          {action.attacker > -1 && <AttackDetails readOnly={readOnly} action={action} setAction={setAction} />}
           {/* End of hidden region */}
         </div>
       </Modal.Content>
@@ -123,9 +133,15 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
         <Button color="grey" onClick={() => setOpen(false)}>
           Cancel
         </Button>
-        <Button primary disabled={!actionValid} onClick={onSave}>
-          Save
-        </Button>
+        {readOnly ? (
+          <Button color="red" inverted onClick={onRemove}>
+            Delete Action
+          </Button>
+        ) : (
+          <Button primary disabled={!actionValid} onClick={onSave}>
+            Save
+          </Button>
+        )}
       </Modal.Actions>
     </Modal>
   );

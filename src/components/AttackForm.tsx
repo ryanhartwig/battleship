@@ -19,7 +19,10 @@ interface AttackFormProps {
 }
 
 export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
-  const items = useAppSelector((s) => s.game.store).filter((i) => i.type !== 'segment');
+  const storeItems = useAppSelector((s) => s.game.store);
+  const items = useMemo(() => {
+    return storeItems.filter((i) => i.type !== 'segment');
+  }, [storeItems]);
   const users = useAppSelector((s) => s.game.users);
   const ships = useAppSelector((s) => s.game.ships);
   const settings = useAppSelector((s) => s.settings);

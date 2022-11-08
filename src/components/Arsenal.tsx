@@ -2,12 +2,15 @@ import { Button, Card, Container } from 'semantic-ui-react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import './Arsenal.css';
 import { itemIcons } from '../utility/storeIcons';
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { buyItem } from '../reducers/game/gameSlice';
 
 export const Arsenal = () => {
   const dispatch = useAppDispatch();
-  const items = useAppSelector((state) => state.game.store).filter((i) => i.type !== 'missile');
+  const storeItems = useAppSelector((state) => state.game.store);
+  const items = useMemo(() => {
+    return storeItems.filter((i) => i.type !== 'missile');
+  }, [storeItems]);
   const shipLevel = useAppSelector((state) => state.game.levels.ship);
 
   const onClick = useCallback(

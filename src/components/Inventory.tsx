@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { togglePlaceMode } from '../reducers/game/gameSlice';
 import { Item } from '../types/items';
@@ -10,7 +10,8 @@ export const Inventory = () => {
 
   const items = useAppSelector((state) => state.game.store);
   const inventory = useAppSelector((state) => state.game.inventory);
-  const newSegments = useAppSelector((state) => state.game.temporaryShip?.segments.filter((s) => s.new));
+  const segments = useAppSelector((state) => state.game.temporaryShip?.segments);
+  const newSegments = useMemo(() => segments?.filter((s) => s.new), [segments]);
 
   const handleClick = useCallback(
     (item: Item) => {

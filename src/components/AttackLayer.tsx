@@ -47,7 +47,7 @@ const Attack: React.FC<AttackProps> = ({ action, self, opponents }) => {
 export const AttackLayer = () => {
   const actions = useAppSelector((s) => s.game.actions);
   const users = useAppSelector((s) => s.game.users);
-  console.log(actions);
+
   return (
     <>
       {actions

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Modal, Header, Button } from 'semantic-ui-react';
 import { useAppSelector } from '../../app/hooks';
 import { BoardAction } from '../../types/action';
@@ -25,6 +25,10 @@ export const SetAttackType = ({ action, setAction }: SetAttackTypeProps) => {
   const items = useMemo(() => {
     return storeItems.filter((i) => i.type !== 'segment');
   }, [storeItems]);
+
+  useEffect(() => {
+    setAction((a) => ({ ...a, weapons: ['missile'] }));
+  }, [action.attacker, setAction]);
 
   const setRangeModifier = useCallback(
     (type: RangeModifierType) => {

@@ -1,8 +1,8 @@
 import clsx from 'clsx';
 import './AttackLayer.css';
-import { useAppSelector } from '../app/hooks';
-import { BoardAction } from '../types/action';
-import { User } from '../types/user';
+import { useAppSelector } from '../../app/hooks';
+import { BoardAction } from '../../types/action';
+import { User } from '../../types/user';
 import { useMemo } from 'react';
 
 const getUser = (id: number, self: User, opponents: User[]): User => {

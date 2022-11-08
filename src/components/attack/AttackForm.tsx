@@ -45,6 +45,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   }, [actions]);
 
   const [x, y] = useMemo(() => coords.split('-').map((n) => Number(n)), [coords]);
+  const sunk = shipsMap.get(coords)?.segments.every((seg) => attacksMap.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y));
   const [action, setAction] = useState<BoardAction>({
     id: Date.now(),
     type: 'attack',
@@ -55,7 +56,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
       ? [
           {
             userId: users.self.id,
-            sunk: shipsMap.get(coords)?.segments.every((seg) => attacksMap.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y)),
+            sunk,
           },
         ]
       : [],
@@ -105,6 +106,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
       <Modal.Header style={{ color: shipsMap.has(coords) ? 'red' : 'black' }}>
         {`${characters[y]}${x}`}
         {shipsMap.has(coords) ? " - YOU'RE HIT" : ''}
+        {sunk ? ' AND SUNK' : ''}
       </Modal.Header>
       <Modal.Content>
         <div className="attack-form">

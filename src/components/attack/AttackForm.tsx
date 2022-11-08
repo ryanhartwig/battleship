@@ -17,11 +17,12 @@ interface AttackFormProps {
 
 export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   const [readOnly, setReadOnly] = useState(false);
+  const dispatch = useAppDispatch();
+
   const users = useAppSelector((s) => s.game.users);
   const actions = useAppSelector((s) => s.game.actions);
   const ships = useAppSelector((s) => s.game.ships);
   const settings = useAppSelector((s) => s.settings);
-  const dispatch = useAppDispatch();
   const shipsMap = useMemo(() => {
     const map = new Map<string, Ship>();
     ships.forEach((ship) => {

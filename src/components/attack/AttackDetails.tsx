@@ -6,6 +6,7 @@ import { itemIcons } from '../../utility/storeIcons';
 import { BoardAction } from '../../types/action';
 import { useAppSelector } from '../../app/hooks';
 import { Checkbox, Header, Menu } from 'semantic-ui-react';
+import { Preview } from './Preview';
 
 interface AttackDetailsProps {
   action: BoardAction;
@@ -99,6 +100,9 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
       <br />
 
       <SetAttackType readOnly={readOnly} action={action} setAction={setAction} />
+
+      {/* Board preview */}
+      <Preview action={action} />
 
       {/* Users hit */}
       <Header as="h3" style={{ marginBottom: 0 }}>

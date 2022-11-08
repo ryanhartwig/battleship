@@ -8,8 +8,8 @@ import { ShipItem, ShipLayer } from './ShipLayer';
 import './Board.css';
 import { useBoardSize } from '../hooks/useBoardSize';
 import { Inventory } from './Inventory';
-import { AttackForm } from './AttackForm';
-import { AttackLayer } from './AttackLayer';
+import { AttackForm } from './attack/AttackForm';
+import { AttackLayer } from './attack/AttackLayer';
 
 export const Board = () => {
   const sizePx = useBoardSize();

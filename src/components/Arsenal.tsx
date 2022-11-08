@@ -35,7 +35,7 @@ export const Arsenal = () => {
 
   return (
     <Container style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>
-      <Button onClick={onSkipTurn} style={c(cash - skip) < 0 ? { opacity: '0.5', pointerEvents: 'none' } : {}}>
+      <Button onClick={onSkipTurn} disabled={c(cash - skip) < 0}>
         Skip Turn (${skip})
       </Button>
       <div className="store" style={{ marginTop: '10px' }}>

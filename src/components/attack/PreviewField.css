@@ -32,8 +32,10 @@
 }
 
 .preview-field.oob {
-  background: grey;
+  /* background: rgba(99, 218, 229, 0.835); */
+  background: linear-gradient(rgba(0, 255, 247, 0.474), rgba(133, 203, 231, 0.806));
   pointer-events: none;
+  justify-content: center;
 }
 
 .preview-hit.sunk {

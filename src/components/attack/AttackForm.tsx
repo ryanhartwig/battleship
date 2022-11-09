@@ -17,6 +17,7 @@ interface AttackFormProps {
 
 export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   const [readOnly, setReadOnly] = useState(false);
+
   const dispatch = useAppDispatch();
 
   const users = useAppSelector((s) => s.game.users);
@@ -74,7 +75,6 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   }, [actions, coords]);
 
   const weapon = action.weapons[0];
-  const range = action.weapons[1];
 
   // Reset on change attack
   useEffect(() => {
@@ -89,7 +89,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
           ]
         : [],
     }));
-  }, [weapon, range, shipsMap, coords, users.self.id, sunk]);
+  }, [weapon, shipsMap, coords, users.self.id, sunk]);
 
   const onSetAttacker = useCallback((attacker: number) => {
     setAction((a) => ({ ...a, attacker }));

@@ -6,6 +6,10 @@ import { PreviewField } from './PreviewField';
 
 interface PreviewProps {
   action: BoardAction;
+  setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
+  selected: string;
+  setSelected: React.Dispatch<React.SetStateAction<string>>;
+  hitUser?: number;
 }
 
 export interface Coord {
@@ -13,11 +17,9 @@ export interface Coord {
   y: number;
 }
 
-export const Preview = ({ action }: PreviewProps) => {
+export const Preview = ({ action, setAction, hitUser, selected, setSelected }: PreviewProps) => {
   const [rangeX, setRangeX] = useState<number>(1);
   const [rangeY, setRangeY] = useState<number>(1);
-
-  const [selected, setSelected] = useState<string>(`${action.x}-${action.y}`);
 
   const coords: Coord[] = useMemo(() => {
     const { x, y } = action;
@@ -53,16 +55,43 @@ export const Preview = ({ action }: PreviewProps) => {
     return fillRange([...range]);
   }, [action]);
 
-  const handleSelectField = useCallback(
+  const onSelectField = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const field = e.target;
       if (!(field instanceof HTMLDivElement)) return;
       const id = field.id.split('_')[1];
-      if (id === selected) return;
+      const [fX, fY] = id.split('-').map((i) => Number(i));
 
+      let oX: number | undefined = fX - action.x;
+      let oY: number | undefined = fY - action.y;
+
+      if (hitUser) {
+        setAction((a) => {
+          const next: BoardAction = JSON.parse(JSON.stringify(a));
+
+          const hitIndex = next.hits.findIndex((h) => {
+            if (!oX && !oY) {
+              return !h.oX && !h.oY && h.userId === hitUser;
+            }
+            return h.oX === oX && h.oY === oY && h.userId === hitUser;
+          });
+
+          if (hitIndex === -1) {
+            [oX, oY] = [oX === 0 ? undefined : oX, oY === 0 ? undefined : oY];
+            next.hits.push({ userId: hitUser, oX, oY });
+          } else {
+            next.hits = next.hits.slice(0, hitIndex).concat(next.hits.slice(hitIndex + 1));
+          }
+
+          return next;
+        });
+      }
+
+      // Sets selected to cell coordinates in preview_x-y format
+      if (id === selected) return;
       setSelected(id);
     },
-    [selected]
+    [selected, action.x, action.y, hitUser, setAction, setSelected]
   );
 
   return (
@@ -73,7 +102,7 @@ export const Preview = ({ action }: PreviewProps) => {
           gridTemplateColumns: `repeat(${rangeX}, 1fr)`,
           gridTemplateRows: `repeat(${rangeY})`,
         }}
-        onClick={handleSelectField}
+        onClick={onSelectField}
       >
         {coords.map((coord) => {
           const { x, y } = coord;

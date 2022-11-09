@@ -30,3 +30,7 @@
 .preview-field.selected {
   background: rgba(0, 252, 0, 0.277);
 }
+
+.preview-hit.sunk {
+  color: red !important;
+}

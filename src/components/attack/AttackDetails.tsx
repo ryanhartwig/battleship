@@ -1,6 +1,6 @@
 import { SetAttackType } from './SetAttackType';
 import { GrAdd } from 'react-icons/gr';
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import './AttackDetails.css';
 import { itemIcons } from '../../utility/storeIcons';
 import { BoardAction } from '../../types/action';
@@ -16,6 +16,9 @@ interface AttackDetailsProps {
 
 export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProps) => {
   const users = useAppSelector((s) => s.game.users);
+
+  const [selected, setSelected] = useState<string>(`${action.x}-${action.y}`);
+  const [currentUser, setCurrentUser] = useState<number>();
 
   let Icon1 = useMemo(() => {
     return itemIcons[action.weapons[0]];
@@ -59,6 +62,40 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
     [setAction]
   );
 
+  const onSetSunk = useCallback(() => {
+    const [x, y] = selected.split('-').map((c) => Number(c));
+
+    const oX = x - action.x || undefined;
+    const oY = y - action.y || undefined;
+
+    setAction((a: BoardAction) => {
+      let next: BoardAction = JSON.parse(JSON.stringify(a));
+
+      const sunkIndex = next.hits.findIndex((h) => {
+        return h.oX === oX && h.oY === oY && currentUser === h.userId;
+      });
+
+      if (sunkIndex === -1 && currentUser) {
+        next.hits.push({ userId: currentUser, sunk: true, oX, oY });
+      } else {
+        next.hits[sunkIndex].sunk = !next.hits[sunkIndex].sunk;
+      }
+
+      return next;
+    });
+  }, [action.x, action.y, currentUser, selected, setAction]);
+
+  const onSetHitUser = useCallback(
+    (id: number) => {
+      if (currentUser === id) {
+        setCurrentUser(undefined);
+      } else {
+        setCurrentUser(id);
+      }
+    },
+    [currentUser]
+  );
+
   const onToggleSunk = useCallback(
     (e: any, id: number) => {
       e.stopPropagation();
@@ -79,6 +116,17 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
       });
     },
     [setAction]
+  );
+
+  const isSunk = useCallback(
+    (id: number) => {
+      const [x, y] = selected.split('-').map((c) => Number(c));
+
+      return !!action.hits.find((hit) => {
+        return (x - action.x || undefined) === hit.oX && (y - action.y || undefined) === hit.oY && hit.userId === id;
+      })?.sunk;
+    },
+    [action.hits, action.x, action.y, selected]
   );
 
   return (
@@ -102,22 +150,39 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
       <SetAttackType readOnly={readOnly} action={action} setAction={setAction} />
 
       {/* Board preview */}
-      <Preview action={action} />
+      <Preview action={action} setAction={setAction} selected={selected} setSelected={setSelected} hitUser={currentUser} />
 
       {/* Users hit */}
       <Header as="h3" style={{ marginBottom: 0 }}>
         Players Hit
       </Header>
-      <Menu vertical color="green">
-        {users.opponents.map((user) => {
-          return (
-            <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>
-              {user.name}
-              <Checkbox label="Sunk" checked={isPlayerSunk(user.id)} onClick={(e) => onToggleSunk(e, user.id)} />
-            </Menu.Item>
-          );
-        })}
-      </Menu>
+
+      {action.weapons[0] === 'missile' ? (
+        <Menu vertical color="green">
+          {users.opponents.map((user) => {
+            return (
+              <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>
+                {user.name}
+                <Checkbox label="Sunk" checked={isPlayerSunk(user.id)} onClick={(e) => onToggleSunk(e, user.id)} />
+              </Menu.Item>
+            );
+          })}
+        </Menu>
+      ) : (
+        <>
+          <br></br>
+          <Checkbox label="Sunk" checked={currentUser ? isSunk(currentUser) : false} onClick={onSetSunk}></Checkbox>
+          <Menu vertical color="green">
+            {users.opponents.map((user) => {
+              return (
+                <Menu.Item style={{ justifyContent: 'center' }} className="hit-player" disabled={readOnly} active={user.id === currentUser} color={'green'} key={'select' + user.id} onClick={() => onSetHitUser(user.id)}>
+                  {user.name}
+                </Menu.Item>
+              );
+            })}
+          </Menu>
+        </>
+      )}
     </>
   );
 };

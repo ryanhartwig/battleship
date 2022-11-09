@@ -36,7 +36,7 @@ export const Board = () => {
   const { onMouseDown, onMouseMove, onMouseUp, onTouchMove, onTouchStart, temporaryShip } = useEditShip();
 
   return (
-    <div style={{ maxWidth: '100vw', position: 'relative' }}>
+    <div className="board-wrapper" style={{ maxWidth: '100vw', position: 'relative' }}>
       {/* <Inventory /> */}
       <div
         id="board"

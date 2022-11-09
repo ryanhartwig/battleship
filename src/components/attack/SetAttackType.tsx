@@ -9,10 +9,9 @@ import { itemIcons } from '../../utility/storeIcons';
 interface SetAttackTypeProps {
   action: BoardAction;
   setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
-  readOnly: boolean;
 }
 
-export const SetAttackType = ({ action, setAction, readOnly }: SetAttackTypeProps) => {
+export const SetAttackType = ({ action, setAction }: SetAttackTypeProps) => {
   const [typeModalOpen, setTypeModalOpen] = useState<boolean>(false);
   const self = useAppSelector((s) => s.game.users.self.id);
 
@@ -60,7 +59,6 @@ export const SetAttackType = ({ action, setAction, readOnly }: SetAttackTypeProp
           e.preventDefault();
           setTypeModalOpen(true);
         }}
-        disabled={readOnly}
       >
         Edit Attack Type
       </Button>

@@ -4,6 +4,7 @@
   left: 0;
   right: 0;
   padding: 6px;
+  padding-bottom: calc(6px + env(safe-area-inset-bottom));
   border-top-right-radius: 6px;
   border-top-left-radius: 6px;
   box-shadow: black 0 0 2px 0px;

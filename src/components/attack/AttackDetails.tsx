@@ -11,10 +11,9 @@ import { Preview } from './Preview';
 interface AttackDetailsProps {
   action: BoardAction;
   setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
-  readOnly: boolean;
 }
 
-export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProps) => {
+export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
   const users = useAppSelector((s) => s.game.users);
 
   const [selected, setSelected] = useState<string>(`${action.x}-${action.y}`);
@@ -153,7 +152,7 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
 
       <br />
 
-      <SetAttackType readOnly={readOnly} action={action} setAction={setAction} />
+      <SetAttackType action={action} setAction={setAction} />
 
       {/* Board preview */}
       <Preview action={action} setAction={setAction} selected={selected} setSelected={setSelected} hitUser={currentUser} />
@@ -167,7 +166,7 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
         <Menu vertical color="green">
           {users.opponents.map((user) => {
             return (
-              <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>
+              <Menu.Item className="hit-player" active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>
                 {user.name}
                 <Checkbox label="Sunk" checked={isPlayerSunk(user.id)} onClick={(e) => onToggleSunk(e, user.id)} />
               </Menu.Item>
@@ -181,7 +180,7 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
           <Menu vertical color="green">
             {users.opponents.map((user) => {
               return (
-                <Menu.Item style={{ justifyContent: 'center' }} className="hit-player" disabled={readOnly} active={user.id === currentUser} color={'green'} key={'select' + user.id} onClick={() => onSetHitUser(user.id)}>
+                <Menu.Item style={{ justifyContent: 'center' }} className="hit-player" active={user.id === currentUser} color={'green'} key={'select' + user.id} onClick={() => onSetHitUser(user.id)}>
                   {user.name}
                 </Menu.Item>
               );

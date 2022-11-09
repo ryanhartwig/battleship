@@ -30,7 +30,7 @@ export const Game = () => {
   };
 
   return (
-    <div className="main" style={{ backgroundColor: 'rgba(255, 0, 0, 0.6' }}>
+    <div className="main">
       <Board />
 
       <div className="main-content">

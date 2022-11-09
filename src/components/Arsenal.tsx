@@ -32,15 +32,17 @@ export const Arsenal = () => {
     dispatch(skipTurn());
   }, [dispatch]);
 
+  const skipDisabled = c(cash - skip) < 0;
   return (
     <Container style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center', flexDirection: 'column' }}>
-      <Button inverted color="green" onClick={onSkipTurn} disabled={c(cash - skip) < 0}>
+      <Button inverted color={skipDisabled ? 'red' : 'green'} onClick={onSkipTurn} disabled={skipDisabled}>
         Skip Turn (${skip})
       </Button>
       <div className="store" style={{ marginTop: '10px' }}>
         {items.map((item) => {
           const Icon = itemIcons[item.type];
           let style = item.type === 'directional' ? { transform: 'rotate(270deg)' } : undefined;
+          const disabled = c(cash - item.cost) < 0;
           return (
             <Card key={item.type} className="store-item" style={{ width: '180px', height: '180px' }}>
               <Card.Content>
@@ -53,7 +55,7 @@ export const Arsenal = () => {
                 </Card.Description>
               </Card.Content>
               <Card.Content extra style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <Button title={item.type} onClick={onClick} basic color="green">
+                <Button disabled={disabled} title={item.type} onClick={onClick} basic color={disabled ? 'red' : 'green'}>
                   Purchase (${item.type === 'segment' ? item.cost - shipLevel : item.cost})
                 </Button>
               </Card.Content>

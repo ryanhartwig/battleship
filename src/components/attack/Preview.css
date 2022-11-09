@@ -1,6 +1,6 @@
 .preview-wrapper {
-  width: 80%;
-  margin: 0 auto;
+  width: fit-content;
+  margin: 20px auto;
 }
 
 .attack-preview {

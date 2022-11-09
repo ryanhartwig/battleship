@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { useCallback, useMemo } from 'react';
+import { useAppSelector } from '../../app/hooks';
 import { useGetUsers } from '../../hooks/useGetUser';
 import { BoardAction } from '../../types/action';
 import { characters } from '../../utility/data';
@@ -25,6 +26,9 @@ export const PreviewField = ({ coords, selected, max, action }: PreviewFieldProp
       .map((h) => h.userId);
   }, [action, coords]);
 
+  const size = useAppSelector((s) => s.settings.size);
+  const moveLevels = useAppSelector((s) => s.settings.upgrades.move.length);
+
   const { x, y } = coords;
 
   const hits = useGetUsers(hitUsers);
@@ -39,11 +43,11 @@ export const PreviewField = ({ coords, selected, max, action }: PreviewFieldProp
   );
 
   return (
-    <div id={`preview_${x}-${y}`} className={clsx('preview-field', { selected: selected === `${x}-${y}`, right: max.x === x, bottom: max.y === y })}>
+    <div id={`preview_${x}-${y}`} className={clsx('preview-field', { selected: selected === `${x}-${y}`, right: max.x === x, bottom: max.y === y }, { oob: x < 1 || y < 1 || x > size + moveLevels - 1 || y > size + moveLevels - 1 })}>
       {/* Coordinates */}
       <div>
         <p>
-          {characters[y]}
+          {characters[y] || 'Z'}
           {x}
         </p>
       </div>

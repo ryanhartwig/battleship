@@ -1,6 +1,6 @@
 import { SetAttackType } from './SetAttackType';
 import { GrAdd } from 'react-icons/gr';
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import './AttackDetails.css';
 import { itemIcons } from '../../utility/storeIcons';
 import { BoardAction } from '../../types/action';
@@ -19,6 +19,12 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
 
   const [selected, setSelected] = useState<string>(`${action.x}-${action.y}`);
   const [currentUser, setCurrentUser] = useState<number>();
+
+  const weapon = action.weapons[0];
+
+  useEffect(() => {
+    setSelected(`${action.x}-${action.y}`);
+  }, [weapon, action.x, action.y]);
 
   let Icon1 = useMemo(() => {
     return itemIcons[action.weapons[0]];

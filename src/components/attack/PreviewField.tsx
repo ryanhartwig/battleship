@@ -7,8 +7,6 @@ import { characters } from '../../utility/data';
 import { Coord } from './Preview';
 import './PreviewField.css';
 
-import { TiWaves } from 'react-icons/ti';
-
 interface PreviewFieldProps {
   coords: Coord;
   selected: string;
@@ -54,11 +52,7 @@ export const PreviewField = ({ coords, selected, max, action }: PreviewFieldProp
   return (
     <div id={`preview_${x}-${y}`} className={clsx('preview-field', { selected: selected === `${x}-${y}`, right: max.x === x, bottom: max.y === y }, { oob: isOob(x, y) })}>
       {/* Coordinates */}
-      {isOob(x, y) ? (
-        <div style={{ color: 'rgba(255,255,255,0.8)', fontSize: '30px' }}>
-          <TiWaves />
-        </div>
-      ) : (
+      {!isOob(x, y) && (
         <>
           <div>
             <p>

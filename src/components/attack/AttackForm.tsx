@@ -73,6 +73,24 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
     }
   }, [actions, coords]);
 
+  const weapon = action.weapons[0];
+  const range = action.weapons[1];
+
+  // Reset on change attack
+  useEffect(() => {
+    setAction((a) => ({
+      ...a,
+      hits: shipsMap.has(coords)
+        ? [
+            {
+              userId: users.self.id,
+              sunk,
+            },
+          ]
+        : [],
+    }));
+  }, [weapon, range, shipsMap, coords, users.self.id, sunk]);
+
   const onSetAttacker = useCallback((attacker: number) => {
     setAction((a) => ({ ...a, attacker }));
   }, []);
@@ -152,7 +170,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
         </Button>
         {readOnly ? (
           <Button color="red" inverted onClick={onRemove}>
-            Delete Action
+            Undo Attack
           </Button>
         ) : (
           <Button primary disabled={!actionValid} onClick={onSave}>

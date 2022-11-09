@@ -77,7 +77,7 @@ export const Preview = ({ action }: PreviewProps) => {
       >
         {coords.map((coord) => {
           const { x, y } = coord;
-          return <PreviewField coords={{ x, y }} selected={selected} max={{ x: coords[coords.length - 1].x, y: coords[coords.length - 1].y }} />;
+          return <PreviewField coords={{ x, y }} selected={selected} max={{ x: coords[coords.length - 1].x, y: coords[coords.length - 1].y }} action={action} />;
         })}
       </div>
     </div>

@@ -109,10 +109,6 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
         Players Hit
       </Header>
       <Menu vertical color="green">
-        {/* <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(users.self.id)} onClick={() => {}} color={'green'}>
-          {users.self.name}
-          <Checkbox label="Sunk" checked={isPlayerSunk(users.self.id)} onClick={() => {}} />
-        </Menu.Item> */}
         {users.opponents.map((user) => {
           return (
             <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>

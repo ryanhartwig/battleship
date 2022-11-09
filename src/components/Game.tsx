@@ -1,4 +1,5 @@
 import './Game.css';
+import clsx from 'clsx';
 import { Menu, SemanticCOLORS } from 'semantic-ui-react';
 import { useState } from 'react';
 import { Board } from './Board';
@@ -7,6 +8,7 @@ import { Upgrades } from './Upgrades';
 import { Arsenal } from './Arsenal';
 import { Players } from './players/Players';
 import { Rules } from './Rules';
+import { useOrientation } from '../hooks/useOrientation';
 
 type Tab = 'arsenal' | 'upgrades' | 'rules' | 'players';
 
@@ -19,6 +21,7 @@ const tabColors: Record<Tab, SemanticCOLORS> = {
 
 export const Game = () => {
   const [tab, setTab] = useState<Tab>('upgrades');
+  const orientation = useOrientation();
 
   const createTabProps = (t: Tab) => {
     const active = tab === t;
@@ -30,7 +33,7 @@ export const Game = () => {
   };
 
   return (
-    <div className="main">
+    <div className={clsx('main', { landscape: orientation === 'landscape' })}>
       <Board />
 
       <div className="main-content">
@@ -45,9 +48,9 @@ export const Game = () => {
         {tab === 'arsenal' && <Arsenal />}
         {tab === 'rules' && <Rules />}
         {tab === 'players' && <Players />}
-      </div>
 
-      <ActionBar />
+        <ActionBar />
+      </div>
     </div>
   );
 };

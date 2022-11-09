@@ -6,6 +6,18 @@
   flex-direction: column;
 }
 
+.main.landscape {
+  flex-direction: row;
+}
+
+div.board-wrapper {
+  flex: 1;
+}
+
+.main.landscape div.main-content {
+  margin-top: 0;
+}
+
 div.main-content {
   flex: 1;
   overflow-x: hidden;

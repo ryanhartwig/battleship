@@ -10,10 +10,9 @@ import { Checkbox, Header, Menu } from 'semantic-ui-react';
 interface AttackDetailsProps {
   action: BoardAction;
   setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
-  readOnly: boolean;
 }
 
-export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProps) => {
+export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
   const users = useAppSelector((s) => s.game.users);
 
   let Icon1 = useMemo(() => {
@@ -98,20 +97,20 @@ export const AttackDetails = ({ action, setAction, readOnly }: AttackDetailsProp
 
       <br />
 
-      <SetAttackType readOnly={readOnly} action={action} setAction={setAction} />
+      <SetAttackType action={action} setAction={setAction} />
 
       {/* Users hit */}
       <Header as="h3" style={{ marginBottom: 0 }}>
         Players Hit
       </Header>
       <Menu vertical color="green">
-        <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(users.self.id)} onClick={() => {}} color={'green'}>
+        <Menu.Item className="hit-player" active={isPlayerHit(users.self.id)} onClick={() => {}} color={'green'}>
           {users.self.name}
           <Checkbox label="Sunk" checked={isPlayerSunk(users.self.id)} onClick={() => {}} />
         </Menu.Item>
         {users.opponents.map((user) => {
           return (
-            <Menu.Item className="hit-player" disabled={readOnly} active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>
+            <Menu.Item className="hit-player" active={isPlayerHit(user.id)} color={'green'} key={user.id} onClick={() => onToggleHit(user.id)}>
               {user.name}
               <Checkbox label="Sunk" checked={isPlayerSunk(user.id)} onClick={(e) => onToggleSunk(e, user.id)} />
             </Menu.Item>

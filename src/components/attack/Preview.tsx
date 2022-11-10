@@ -4,7 +4,6 @@ import { BoardAction } from '../../types/action';
 import { DirectionalBomb } from '../../types/items';
 import { getRange } from '../../utility/getRange';
 import { fillRange } from '../../utility/previewHelpers';
-import { Direction } from './AttackDetails';
 import './Preview.css';
 import { PreviewField } from './PreviewField';
 
@@ -13,7 +12,6 @@ interface PreviewProps {
   setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
   selected: string;
   setSelected: React.Dispatch<React.SetStateAction<string>>;
-  direction: Direction;
   hitUser?: number;
 }
 
@@ -22,7 +20,7 @@ export interface Coord {
   y: number;
 }
 
-export const Preview = ({ action, setAction, hitUser, selected, setSelected, direction }: PreviewProps) => {
+export const Preview = ({ action, setAction, hitUser, selected, setSelected }: PreviewProps) => {
   const [rangeX, setRangeX] = useState<number>(1);
   const [rangeY, setRangeY] = useState<number>(1);
   const items = useAppSelector((s) => s.game.store);
@@ -30,11 +28,11 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected, dir
 
   const coords: Coord[] = useMemo(() => {
     const { x, y } = action;
-    const range = getRange(`${x}-${y}`, action.weapons[0], direction, directionalBomb);
+    const range = getRange(`${x}-${y}`, action.weapons[0], action.direction, directionalBomb);
     setRangeX(Math.max(range[0].x, range[1].x) - Math.min(range[0].x, range[1].x) + 1);
     setRangeY(Math.max(range[0].y, range[1].y) - Math.min(range[0].y, range[1].y) + 1);
     return fillRange([...range]);
-  }, [action, direction, directionalBomb]);
+  }, [action, directionalBomb]);
 
   const onSelectField = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {

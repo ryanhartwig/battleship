@@ -33,7 +33,7 @@ export const getInitialHits = (coords: string, direction: Direction, bomb: Direc
         let ship = segmentsMap.get(`${cX}-${cY}`);
         if (!ship) continue;
         attacksSet.add(`${cX}-${cY}`);
-        const sunk = segmentsMap.get(coords)?.segments.every((seg) => attacksSet.has(`${seg.x}-${seg.y}`) || (seg.x === cX && seg.y === cY));
+        const sunk = ship.segments.every((seg) => attacksSet.has(`${seg.x}-${seg.y}`));
         hits.push({
           userId: users.self.id,
           oX: cX - x,

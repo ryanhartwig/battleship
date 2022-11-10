@@ -21,7 +21,7 @@ export const getRange = (coords: string, weapon: WeaponType, direction: Directio
         { x: x + 2, y: y + 2 },
       ];
     case 'directional':
-      const LENGTH = directional.length;
+      const LENGTH = directional.length - 1;
       const LEFT = direction === 'left' ? 0 - LENGTH : 0;
       const RIGHT = direction === 'right' ? LENGTH : 0;
       const UP = direction === 'up' ? 0 - LENGTH : 0;

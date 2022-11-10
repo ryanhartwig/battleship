@@ -26,6 +26,9 @@ export const AttackDetails = ({ action, setAction, coords, segmentsMap, attacksS
   const [currentUser, setCurrentUser] = useState<number>();
   const [direction, setDirection] = useState<Direction>('right');
 
+  const [x, y] = useMemo(() => coords.split('-').map((c) => Number(c)), [coords]);
+  const sunk = segmentsMap.get(coords)?.segments.every((seg) => attacksSet.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y));
+
   // Set selected to original field when changing weapon type or direction
   const weapon = action.weapons[0];
   useEffect(() => {
@@ -43,7 +46,18 @@ export const AttackDetails = ({ action, setAction, coords, segmentsMap, attacksS
     const directions: Direction[] = ['up', 'right', 'down', 'left'];
     const current = directions.indexOf(direction);
     setDirection(directions[current + 1] || directions[0]);
-  }, [direction]);
+    setAction((a) => ({
+      ...a,
+      hits: segmentsMap.has(coords)
+        ? [
+            {
+              userId: users.self.id,
+              sunk,
+            },
+          ]
+        : [],
+    }));
+  }, [coords, direction, segmentsMap, setAction, sunk, users.self.id]);
 
   const isPlayerHit = useCallback(
     (id: number) => {

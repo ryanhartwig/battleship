@@ -116,8 +116,8 @@ export const gameSlice = createSlice({
       delete state.temporaryShip;
       delete state.editingShip;
     },
-    toggleShipVisibility: (state) => {
-      state.shipsVisible = !state.shipsVisible;
+    toggleShipVisibility: (state, action?: PayloadAction<boolean | undefined>) => {
+      state.shipsVisible = action?.payload ?? !state.shipsVisible;
     },
     skipTurn: (state) => {
       state.cash = c(state.cash - state.skip);

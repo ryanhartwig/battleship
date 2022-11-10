@@ -62,19 +62,22 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected }: P
       const id = field.id.split('_')[1];
       const [fX, fY] = id.split('-').map((i) => Number(i));
 
-      let oX: number | undefined = fX - action.x;
-      let oY: number | undefined = fY - action.y;
+      let oX: number | undefined = fX - action.x || undefined;
+      let oY: number | undefined = fY - action.y || undefined;
 
       if (hitUser) {
         setAction((a) => {
           const next: BoardAction = JSON.parse(JSON.stringify(a));
-
+          console.log(next.hits);
           const hitIndex = next.hits.findIndex((h) => {
+            console.log(h.userId === hitUser);
             if (!oX && !oY) {
               return !h.oX && !h.oY && h.userId === hitUser;
             }
             return h.oX === oX && h.oY === oY && h.userId === hitUser;
           });
+
+          console.log(hitIndex);
 
           if (hitIndex === -1) {
             [oX, oY] = [oX === 0 ? undefined : oX, oY === 0 ? undefined : oY];
@@ -86,12 +89,11 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected }: P
           return next;
         });
       }
-
       // Sets selected to cell coordinates in preview_x-y format
       if (id === selected) return;
       setSelected(id);
     },
-    [selected, action.x, action.y, hitUser, setAction, setSelected]
+    [action.x, action.y, hitUser, selected, setSelected, setAction]
   );
 
   return (

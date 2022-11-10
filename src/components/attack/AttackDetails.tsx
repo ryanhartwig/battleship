@@ -79,7 +79,7 @@ export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
       const sunkIndex = next.hits.findIndex((h) => {
         return h.oX === oX && h.oY === oY && currentUser === h.userId;
       });
-
+      console.log(sunkIndex);
       if (sunkIndex === -1 && currentUser) {
         next.hits.push({ userId: currentUser, sunk: true, oX, oY });
       } else {
@@ -176,7 +176,7 @@ export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
       ) : (
         <>
           <br></br>
-          <Checkbox label="Sunk" checked={currentUser ? isSunk(currentUser) : false} onClick={onSetSunk}></Checkbox>
+          {currentUser && <Checkbox label="Sunk" checked={currentUser ? isSunk(currentUser) : false} onClick={onSetSunk}></Checkbox>}
           <Menu vertical color="green">
             {users.opponents.map((user) => {
               return (

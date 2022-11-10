@@ -233,7 +233,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
         {edit ? (
           <>
             <Button color="red" inverted onClick={onRemove}>
-              Delete Action
+              Undo Attack
             </Button>
             <Button primary disabled={!valid} onClick={onSave}>
               Save

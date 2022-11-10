@@ -11,6 +11,11 @@ import { SettingsState } from '../settings/settingsSlice';
 
 export type UpgradeLevel = 'movement' | 'pillage' | 'ship' | 'range';
 
+export type Users = {
+  self: User;
+  opponents: User[];
+};
+
 interface GameState {
   /**
    * Increment the game version when breaking changes are made to the game state object.
@@ -53,14 +58,11 @@ interface GameState {
    * Records buyable items
    */
   store: Item[];
-  users: {
-    self: User;
-    opponents: User[];
-  };
+  users: Users;
 }
 
 const initialState: GameState = {
-  version: 13,
+  version: 14,
   cash: 0,
   ships: [],
   placeMode: false,

@@ -1,10 +1,11 @@
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Modal, Header, Button } from 'semantic-ui-react';
 import { useAppSelector } from '../../app/hooks';
 import { BoardAction } from '../../types/action';
-import { WeaponType, RangeModifierType } from '../../types/items';
+import { WeaponType, RangeModifierType, DirectionalBomb } from '../../types/items';
 import { Ship } from '../../types/ship';
+import { getInitialHits } from '../../utility/getInitialHits';
 import { itemIcons } from '../../utility/storeIcons';
 
 interface SetAttackTypeProps {
@@ -21,8 +22,6 @@ export const SetAttackType = ({ action, setAction, coords, segmentsMap, attacksS
 
   const inventory = useAppSelector((s) => s.game.inventory);
   const users = useAppSelector((s) => s.game.users);
-  const sunk = segmentsMap.get(coords)?.segments.every((seg) => attacksSet.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y));
-  const [x, y] = useMemo(() => coords.split('-').map((n) => Number(n)), [coords]);
 
   const isSelf = useMemo(() => {
     return action.attacker === self;
@@ -32,24 +31,7 @@ export const SetAttackType = ({ action, setAction, coords, segmentsMap, attacksS
   const items = useMemo(() => {
     return storeItems.filter((i) => i.type !== 'segment');
   }, [storeItems]);
-
-  const attackerRef = useRef(action.attacker);
-  useEffect(() => {
-    if (attackerRef.current === action.attacker) return;
-    attackerRef.current = action.attacker;
-    setAction((a) => ({
-      ...a,
-      hits: segmentsMap.has(coords)
-        ? [
-            {
-              userId: users.self.id,
-              sunk,
-            },
-          ]
-        : [],
-      weapons: ['missile'],
-    }));
-  }, [action.attacker, coords, segmentsMap, setAction, sunk, users.self.id]);
+  const directionalBomb = useMemo(() => storeItems.find((i) => i.type === 'directional') as DirectionalBomb, [storeItems]);
 
   const setRangeModifier = useCallback(
     (type: RangeModifierType) => {
@@ -68,9 +50,10 @@ export const SetAttackType = ({ action, setAction, coords, segmentsMap, attacksS
       setAction((a) => ({
         ...a,
         weapons: [type, a.weapons[1]],
+        hits: getInitialHits(coords, a.direction, directionalBomb, users, type, segmentsMap, attacksSet),
       }));
     },
-    [setAction]
+    [setAction, attacksSet, coords, directionalBomb, segmentsMap, users]
   );
 
   return (

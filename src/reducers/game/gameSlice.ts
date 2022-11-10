@@ -113,6 +113,9 @@ export const gameSlice = createSlice({
     richify: (state) => {
       state.cash = 9999999;
     },
+    setSegments: (state, action: PayloadAction<number>) => {
+      state.inventory.segment = action.payload;
+    },
     togglePlaceMode: (state) => {
       state.placeMode = !state.placeMode;
       delete state.temporaryShip;
@@ -268,6 +271,6 @@ export const gameSlice = createSlice({
   },
 });
 
-export const { richify, togglePlaceMode, toggleShipVisibility, skipTurn, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome, addAction, removeAction } = gameSlice.actions;
+export const { richify, setSegments, togglePlaceMode, toggleShipVisibility, skipTurn, addShip, selectShip, setTemporaryShip, saveTemporaryShip, buyItem, buyUpgrade, addUser, removeUser, editMe, resetSlice, takeIncome, addAction, removeAction } = gameSlice.actions;
 
 export default gameSlice.reducer;

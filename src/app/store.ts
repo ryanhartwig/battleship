@@ -2,6 +2,7 @@ import { configureStore, ThunkAction, Action, createListenerMiddleware } from '@
 import settingsReducer from '../reducers/settings/settingsSlice';
 import gameReducer from '../reducers/game/gameSlice';
 import { gameSlice } from '../reducers/game/gameSlice';
+import { settingsSlice } from '../reducers/settings/settingsSlice';
 
 const listener = createListenerMiddleware();
 
@@ -11,6 +12,15 @@ listener.startListening({
   },
   effect: (_, api) => {
     localStorage.setItem('game', JSON.stringify((api.getState() as any)[gameSlice.name]));
+  },
+});
+
+listener.startListening({
+  predicate(action) {
+    return action.type.startsWith(settingsSlice.name);
+  },
+  effect: (_, api) => {
+    localStorage.setItem('settings', JSON.stringify((api.getState() as any)[settingsSlice.name]));
   },
 });
 

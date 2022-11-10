@@ -65,8 +65,8 @@ export const Board = () => {
           let coords = { x: (i + 1) % size || size, y: Math.ceil((i + 1) / size) };
           return <Field key={`${coords.x}-${coords.y}`} coords={coords} />;
         })}
-        <ShipLayer />
         <AttackLayer />
+        <ShipLayer />
         {temporaryShip && <ShipItem ship={temporaryShip} unselectable creating />}
       </div>
       <div className="resources">

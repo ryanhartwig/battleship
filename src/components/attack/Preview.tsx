@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Button } from 'semantic-ui-react';
 import { BoardAction } from '../../types/action';
 import { fillRange } from '../../utility/previewHelpers';
+import { Direction } from './AttackDetails';
 import './Preview.css';
 import { PreviewField } from './PreviewField';
 
@@ -10,6 +10,7 @@ interface PreviewProps {
   setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
   selected: string;
   setSelected: React.Dispatch<React.SetStateAction<string>>;
+  direction: Direction;
   hitUser?: number;
 }
 
@@ -18,13 +19,9 @@ export interface Coord {
   y: number;
 }
 
-type Direction = 'up' | 'right' | 'down' | 'left';
-
-export const Preview = ({ action, setAction, hitUser, selected, setSelected }: PreviewProps) => {
+export const Preview = ({ action, setAction, hitUser, selected, setSelected, direction }: PreviewProps) => {
   const [rangeX, setRangeX] = useState<number>(1);
   const [rangeY, setRangeY] = useState<number>(1);
-
-  const [direction, setDirection] = useState<Direction>('right');
 
   const coords: Coord[] = useMemo(() => {
     const { x, y } = action;
@@ -86,12 +83,6 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected }: P
     return fillRange([...range]);
   }, [action, direction]);
 
-  const onCycleDirection = useCallback(() => {
-    const directions: Direction[] = ['up', 'right', 'down', 'left'];
-    const current = directions.indexOf(direction);
-    setDirection(directions[current + 1] || directions[0]);
-  }, [direction]);
-
   const onSelectField = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
       const field = e.target;
@@ -131,7 +122,6 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected }: P
 
   return (
     <div className="preview-wrapper">
-      {action.weapons[0] === 'directional' && <Button onClick={onCycleDirection}>Rotate</Button>}
       <div className="preview-fields-wrapper">
         <div
           className="attack-preview"

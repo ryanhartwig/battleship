@@ -5,7 +5,7 @@ import './AttackDetails.css';
 import { itemIcons } from '../../utility/storeIcons';
 import { BoardAction } from '../../types/action';
 import { useAppSelector } from '../../app/hooks';
-import { Checkbox, Header, Menu } from 'semantic-ui-react';
+import { Button, Checkbox, Header, Menu } from 'semantic-ui-react';
 import { Preview } from './Preview';
 
 interface AttackDetailsProps {
@@ -13,11 +13,14 @@ interface AttackDetailsProps {
   setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
 }
 
+export type Direction = 'up' | 'right' | 'down' | 'left';
+
 export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
   const users = useAppSelector((s) => s.game.users);
 
   const [selected, setSelected] = useState<string>(`${action.x}-${action.y}`);
   const [currentUser, setCurrentUser] = useState<number>();
+  const [direction, setDirection] = useState<Direction>('right');
 
   const weapon = action.weapons[0];
 
@@ -31,6 +34,12 @@ export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
   let Icon2 = useMemo(() => {
     return action.weapons[1] ? itemIcons[action.weapons[1]] : '';
   }, [action.weapons]);
+
+  const onCycleDirection = useCallback(() => {
+    const directions: Direction[] = ['up', 'right', 'down', 'left'];
+    const current = directions.indexOf(direction);
+    setDirection(directions[current + 1] || directions[0]);
+  }, [direction]);
 
   const isPlayerHit = useCallback(
     (id: number) => {
@@ -154,8 +163,13 @@ export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
 
       <SetAttackType action={action} setAction={setAction} />
 
+      {action.weapons[0] === 'directional' && (
+        <Button onClick={onCycleDirection} style={{ marginTop: '15px' }}>
+          Rotate
+        </Button>
+      )}
       {/* Board preview */}
-      <Preview action={action} setAction={setAction} selected={selected} setSelected={setSelected} hitUser={currentUser} />
+      <Preview action={action} setAction={setAction} selected={selected} setSelected={setSelected} direction={direction} hitUser={currentUser} />
 
       {/* Users hit */}
       <Header as="h3" style={{ marginBottom: 0 }}>

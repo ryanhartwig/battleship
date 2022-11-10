@@ -1,5 +1,8 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { useAppSelector } from '../../app/hooks';
 import { BoardAction } from '../../types/action';
+import { DirectionalBomb } from '../../types/items';
+import { getRange } from '../../utility/getRange';
 import { fillRange } from '../../utility/previewHelpers';
 import { Direction } from './AttackDetails';
 import './Preview.css';
@@ -22,66 +25,16 @@ export interface Coord {
 export const Preview = ({ action, setAction, hitUser, selected, setSelected, direction }: PreviewProps) => {
   const [rangeX, setRangeX] = useState<number>(1);
   const [rangeY, setRangeY] = useState<number>(1);
+  const items = useAppSelector((s) => s.game.store);
+  const directionalBomb = useMemo(() => items.find((i) => i.type === 'directional') as DirectionalBomb, [items]);
 
   const coords: Coord[] = useMemo(() => {
     const { x, y } = action;
-    let range: [Coord, Coord];
-    switch (action.weapons[0]) {
-      case 'missile':
-        range = [
-          { x, y },
-          { x, y },
-        ];
-        break;
-      case 'bomb':
-        range = [
-          { x: x - 1, y: y - 1 },
-          { x: x + 1, y: y + 1 },
-        ];
-        break;
-      case 'atomic':
-        range = [
-          { x: x - 2, y: y - 2 },
-          { x: x + 2, y: y + 2 },
-        ];
-        break;
-      case 'directional':
-        range = [
-          { x, y },
-          { x: x + 8, y },
-        ];
-
-        switch (direction) {
-          case 'up':
-            range = [
-              { x, y: y - 8 },
-              { x, y },
-            ];
-            break;
-          case 'right':
-            range = [
-              { x, y },
-              { x: x + 8, y },
-            ];
-            break;
-          case 'down':
-            range = [
-              { x, y },
-              { x, y: y + 8 },
-            ];
-            break;
-          case 'left':
-            range = [
-              { x: x - 8, y },
-              { x, y },
-            ];
-        }
-        break;
-    }
+    const range = getRange(`${x}-${y}`, action.weapons[0], direction, directionalBomb);
     setRangeX(Math.max(range[0].x, range[1].x) - Math.min(range[0].x, range[1].x) + 1);
     setRangeY(Math.max(range[0].y, range[1].y) - Math.min(range[0].y, range[1].y) + 1);
     return fillRange([...range]);
-  }, [action, direction]);
+  }, [action, direction, directionalBomb]);
 
   const onSelectField = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -133,7 +86,7 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected, dir
         >
           {coords.map((coord) => {
             const { x, y } = coord;
-            return <PreviewField coords={{ x, y }} selected={selected} max={{ x: coords[coords.length - 1].x, y: coords[coords.length - 1].y }} action={action} />;
+            return <PreviewField key={`${x}-${y}`} coords={{ x, y }} selected={selected} max={{ x: coords[coords.length - 1].x, y: coords[coords.length - 1].y }} action={action} />;
           })}
         </div>
       </div>

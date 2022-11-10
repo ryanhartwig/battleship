@@ -1,6 +1,7 @@
+import { Direction } from '../components/attack/AttackDetails';
 import { RangeModifierType, WeaponType } from './items';
 
-interface Hit {
+export interface AttackActionHit {
   /**
    * In the case of an attack that hits multiple squares,
    * oX and oY will be the offset from the point of attack.
@@ -39,7 +40,8 @@ export interface AttackAction {
    * Defaults to Missile
    */
   weapons: [WeaponType, RangeModifierType?];
-  hits: Hit[];
+  direction: Direction;
+  hits: AttackActionHit[];
 }
 
 export type BoardAction = AttackAction;

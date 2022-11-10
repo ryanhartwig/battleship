@@ -27,7 +27,7 @@ interface Bomb extends Buyable {
   size: number;
 }
 
-interface DirectionalBomb extends Buyable {
+export interface DirectionalBomb extends Buyable {
   type: 'directional';
   length: number;
 }

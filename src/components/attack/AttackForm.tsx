@@ -8,6 +8,8 @@ import { BoardAction } from '../../types/action';
 import { addAction, removeAction } from '../../reducers/game/gameSlice';
 import { AttackDetails } from './AttackDetails';
 import { Ship } from '../../types/ship';
+import { DirectionalBomb, WeaponType } from '../../types/items';
+import { getInitialHits } from '../../utility/getInitialHits';
 
 interface AttackFormProps {
   coords: string;
@@ -22,6 +24,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   const ships = useAppSelector((s) => s.game.ships);
   const levels = useAppSelector((s) => s.game.levels);
   const items = useAppSelector((s) => s.game.store);
+  const directionalBomb = useMemo(() => items.find((i) => i.type === 'directional') as DirectionalBomb, [items]);
   const settings = useAppSelector((s) => s.settings);
   const [override, setOverride] = useState(0);
   const dispatch = useAppDispatch();
@@ -48,7 +51,6 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   }, [actions]);
 
   const [x, y] = useMemo(() => coords.split('-').map((n) => Number(n)), [coords]);
-  const sunk = segmentsMap.get(coords)?.segments.every((seg) => attacksSet.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y));
 
   const initialAction = useMemo(() => {
     const init = actions.find((a) => a.x === x && a.y === y && a.type === 'attack');
@@ -57,6 +59,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
     return init;
   }, [actions, x, y]);
 
+  const weaponType: WeaponType = initialAction?.weapons[0] || 'missile';
   const [action, setAction] = useState<BoardAction>(
     initialAction || {
       id: Date.now(),
@@ -64,15 +67,9 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
       attacker: -1,
       x,
       y,
-      hits: segmentsMap.has(coords)
-        ? [
-            {
-              userId: users.self.id,
-              sunk,
-            },
-          ]
-        : [],
-      weapons: ['missile'],
+      direction: 'right',
+      hits: getInitialHits(coords, 'right', directionalBomb, users, weaponType, segmentsMap, attacksSet),
+      weapons: [weaponType],
     }
   );
 
@@ -132,24 +129,28 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
 
     setAction((a) => ({
       ...a,
-      hits: segmentsMap.has(coords)
-        ? [
-            {
-              userId: users.self.id,
-              sunk,
-            },
-          ]
-        : [],
+      hits: getInitialHits(coords, a.direction, directionalBomb, users, weapon, segmentsMap, attacksSet),
     }));
-  }, [weapon, segmentsMap, coords, users.self.id, sunk]);
+  }, [weapon, segmentsMap, coords, users.self.id, attacksSet, users, directionalBomb]);
 
-  const onSetAttacker = useCallback((attacker: number) => {
-    setAction((a) => ({ ...a, attacker }));
-  }, []);
+  const onSetAttacker = useCallback(
+    (attacker: number) => {
+      setAction((a) => ({
+        ...a,
+        attacker,
+        direction: 'right',
+        hits: getInitialHits(coords, 'right', directionalBomb, users, 'missile', segmentsMap, attacksSet),
+        weapons: ['missile'],
+      }));
+    },
+    [attacksSet, coords, directionalBomb, segmentsMap, users]
+  );
   const onClearAttacker = useCallback(() => {
     setAction((a) => ({
       ...a,
       attacker: -1,
+      hits: [],
+      weapons: ['missile'],
     }));
   }, []);
 
@@ -186,6 +187,9 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
     return [true];
   }, [action, validRangeSet, users, coords, override]);
 
+  const HIT = action.weapons[0] === 'missile' && segmentsMap.has(coords);
+  const SUNK = action.weapons[0] === 'missile' && !!action.hits.find(({ userId }) => userId === users.self.id)?.sunk;
+
   return (
     <Modal
       open={open}
@@ -195,10 +199,10 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
       dimmer="blurring"
       className="cell-modal"
     >
-      <Modal.Header style={{ color: segmentsMap.has(coords) ? 'red' : 'black' }}>
+      <Modal.Header style={{ color: HIT ? 'red' : 'black' }}>
         {`${characters[y]}${x}`}
-        {segmentsMap.has(coords) ? " - YOU'RE HIT" : ''}
-        {sunk ? ' AND SUNK' : ''}
+        {HIT ? " - YOU'RE HIT" : ''}
+        {SUNK ? ' AND SUNK' : ''}
       </Modal.Header>
       <Modal.Content>
         <div className="attack-form">

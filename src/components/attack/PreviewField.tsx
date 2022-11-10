@@ -66,7 +66,9 @@ export const PreviewField = ({ coords, selected, max, action }: PreviewFieldProp
             <div>
               <p>
                 {hits.map((u) => (
-                  <span className={clsx('preview-hit', { sunk: isSunk(u.id) })}>{u.initial} </span>
+                  <span key={`preview-field-initial-${u.id}`} className={clsx('preview-hit', { sunk: isSunk(u.id) })}>
+                    {u.initial}{' '}
+                  </span>
                 ))}
               </p>
             </div>

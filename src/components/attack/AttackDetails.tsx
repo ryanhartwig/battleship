@@ -7,26 +7,30 @@ import { BoardAction } from '../../types/action';
 import { useAppSelector } from '../../app/hooks';
 import { Button, Checkbox, Header, Menu } from 'semantic-ui-react';
 import { Preview } from './Preview';
+import { Ship } from '../../types/ship';
 
 interface AttackDetailsProps {
   action: BoardAction;
   setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
+  coords: string;
+  segmentsMap: Map<string, Ship>;
+  attacksSet: Set<string>;
 }
 
 export type Direction = 'up' | 'right' | 'down' | 'left';
 
-export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
+export const AttackDetails = ({ action, setAction, coords, segmentsMap, attacksSet }: AttackDetailsProps) => {
   const users = useAppSelector((s) => s.game.users);
 
   const [selected, setSelected] = useState<string>(`${action.x}-${action.y}`);
   const [currentUser, setCurrentUser] = useState<number>();
   const [direction, setDirection] = useState<Direction>('right');
 
+  // Set selected to original field when changing weapon type or direction
   const weapon = action.weapons[0];
-
   useEffect(() => {
     setSelected(`${action.x}-${action.y}`);
-  }, [weapon, action.x, action.y]);
+  }, [weapon, direction, action.x, action.y]);
 
   let Icon1 = useMemo(() => {
     return itemIcons[action.weapons[0]];
@@ -161,7 +165,7 @@ export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
 
       <br />
 
-      <SetAttackType action={action} setAction={setAction} />
+      <SetAttackType action={action} setAction={setAction} coords={coords} segmentsMap={segmentsMap} attacksSet={attacksSet} />
 
       {action.weapons[0] === 'directional' && (
         <Button onClick={onCycleDirection} style={{ marginTop: '15px' }}>

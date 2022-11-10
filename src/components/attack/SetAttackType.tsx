@@ -1,21 +1,28 @@
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Modal, Header, Button } from 'semantic-ui-react';
 import { useAppSelector } from '../../app/hooks';
 import { BoardAction } from '../../types/action';
 import { WeaponType, RangeModifierType } from '../../types/items';
+import { Ship } from '../../types/ship';
 import { itemIcons } from '../../utility/storeIcons';
 
 interface SetAttackTypeProps {
   action: BoardAction;
   setAction: React.Dispatch<React.SetStateAction<BoardAction>>;
+  coords: string;
+  segmentsMap: Map<string, Ship>;
+  attacksSet: Set<string>;
 }
 
-export const SetAttackType = ({ action, setAction }: SetAttackTypeProps) => {
+export const SetAttackType = ({ action, setAction, coords, segmentsMap, attacksSet }: SetAttackTypeProps) => {
   const [typeModalOpen, setTypeModalOpen] = useState<boolean>(false);
   const self = useAppSelector((s) => s.game.users.self.id);
 
   const inventory = useAppSelector((s) => s.game.inventory);
+  const users = useAppSelector((s) => s.game.users);
+  const sunk = segmentsMap.get(coords)?.segments.every((seg) => attacksSet.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y));
+  const [x, y] = useMemo(() => coords.split('-').map((n) => Number(n)), [coords]);
 
   const isSelf = useMemo(() => {
     return action.attacker === self;
@@ -26,9 +33,24 @@ export const SetAttackType = ({ action, setAction }: SetAttackTypeProps) => {
     return storeItems.filter((i) => i.type !== 'segment');
   }, [storeItems]);
 
+  const attackerRef = useRef(action.attacker);
   useEffect(() => {
-    setAction((a) => ({ ...a, weapons: ['missile'] }));
-  }, [action.attacker, setAction]);
+    if (attackerRef.current === action.attacker) return;
+    attackerRef.current = action.attacker;
+    console.log('set attacker ');
+    setAction((a) => ({
+      ...a,
+      hits: segmentsMap.has(coords)
+        ? [
+            {
+              userId: users.self.id,
+              sunk,
+            },
+          ]
+        : [],
+      weapons: ['missile'],
+    }));
+  }, [action.attacker, coords, segmentsMap, setAction, sunk, users.self.id]);
 
   const setRangeModifier = useCallback(
     (type: RangeModifierType) => {

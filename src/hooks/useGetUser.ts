@@ -1,9 +1,10 @@
 import { useAppSelector } from '../app/hooks';
 import { User } from '../types/user';
+import { getUser } from '../utility/getUser';
 
-export const useGetUser = (id: number) => {
+export const useGetUser = (id: number): User | undefined => {
   const users = useAppSelector((s) => s.game.users);
-  return users.self.id === id ? users.self : users.opponents.find((u) => u.id === id);
+  return getUser(id, users.self, users.opponents);
 };
 
 export const useGetUsers = (ids: number[]): User[] => {

@@ -92,7 +92,6 @@ export const AttackDetails = ({ action, setAction, coords, segmentsMap, attacksS
       const sunkIndex = next.hits.findIndex((h) => {
         return h.oX === oX && h.oY === oY && currentUser === h.userId;
       });
-      console.log(sunkIndex);
       if (sunkIndex === -1 && currentUser) {
         next.hits.push({ userId: currentUser, sunk: true, oX, oY });
       } else {

@@ -37,7 +37,6 @@ export const SetAttackType = ({ action, setAction, coords, segmentsMap, attacksS
   useEffect(() => {
     if (attackerRef.current === action.attacker) return;
     attackerRef.current = action.attacker;
-    console.log('set attacker ');
     setAction((a) => ({
       ...a,
       hits: segmentsMap.has(coords)

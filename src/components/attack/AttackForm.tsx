@@ -77,10 +77,6 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   );
 
   useEffect(() => {
-    console.log('Action changed');
-  }, [action]);
-
-  useEffect(() => {
     setOverride(0);
   }, [action]);
 
@@ -129,12 +125,11 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   const weaponRef = useRef<string>(action.weapons[0]);
 
   const weapon = action.weapons[0];
-  // Reset on change attack (DELETES ALL HITS)
+  // Reset on change attack (DELETES ALL HITS except user if present)
   useEffect(() => {
     if (weaponRef.current === weapon) return;
     weaponRef.current = weapon;
 
-    console.log('Reset on change attack');
     setAction((a) => ({
       ...a,
       hits: segmentsMap.has(coords)
@@ -147,17 +142,6 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
         : [],
     }));
   }, [weapon, segmentsMap, coords, users.self.id, sunk]);
-
-  // Check if action already exists
-  // useEffect(() => {
-  //   const [x, y] = coords.split('-').map((c) => Number(c));
-  //   const existingAction = actions.find((a) => a.x === x && a.y === y && a.type === 'attack');
-  //   if (existingAction) {
-  //     console.log('Set action to existing');
-  //     setAction(existingAction);
-  //     setEdit(true);
-  //   }
-  // }, [actions, coords]);
 
   const onSetAttacker = useCallback((attacker: number) => {
     setAction((a) => ({ ...a, attacker }));

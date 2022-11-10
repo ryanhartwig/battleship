@@ -8,6 +8,8 @@ import { useAppSelector } from '../../app/hooks';
 import { Button, Checkbox, Header, Menu } from 'semantic-ui-react';
 import { Preview } from './Preview';
 import { Ship } from '../../types/ship';
+import { getInitialHits } from '../../utility/getInitialHits';
+import { DirectionalBomb } from '../../types/items';
 
 interface AttackDetailsProps {
   action: BoardAction;
@@ -24,16 +26,13 @@ export const AttackDetails = ({ action, setAction, coords, segmentsMap, attacksS
 
   const [selected, setSelected] = useState<string>(`${action.x}-${action.y}`);
   const [currentUser, setCurrentUser] = useState<number>();
-  const [direction, setDirection] = useState<Direction>('right');
-
-  const [x, y] = useMemo(() => coords.split('-').map((c) => Number(c)), [coords]);
-  const sunk = segmentsMap.get(coords)?.segments.every((seg) => attacksSet.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y));
+  const bomb = useAppSelector((s) => s.game.store.find((s) => s.type === 'directional') as DirectionalBomb);
 
   // Set selected to original field when changing weapon type or direction
   const weapon = action.weapons[0];
   useEffect(() => {
     setSelected(`${action.x}-${action.y}`);
-  }, [weapon, direction, action.x, action.y]);
+  }, [weapon, action.x, action.y, action.direction]);
 
   let Icon1 = useMemo(() => {
     return itemIcons[action.weapons[0]];
@@ -44,20 +43,14 @@ export const AttackDetails = ({ action, setAction, coords, segmentsMap, attacksS
 
   const onCycleDirection = useCallback(() => {
     const directions: Direction[] = ['up', 'right', 'down', 'left'];
-    const current = directions.indexOf(direction);
-    setDirection(directions[current + 1] || directions[0]);
+    const current = directions.indexOf(action.direction);
+    const nextDirection = directions[(current + 1) % directions.length];
     setAction((a) => ({
       ...a,
-      hits: segmentsMap.has(coords)
-        ? [
-            {
-              userId: users.self.id,
-              sunk,
-            },
-          ]
-        : [],
+      direction: nextDirection,
+      hits: getInitialHits(coords, nextDirection, bomb, users, a.weapons[0], segmentsMap, attacksSet),
     }));
-  }, [coords, direction, segmentsMap, setAction, sunk, users.self.id]);
+  }, [coords, segmentsMap, setAction, action.direction, attacksSet, users, bomb]);
 
   const isPlayerHit = useCallback(
     (id: number) => {
@@ -186,7 +179,7 @@ export const AttackDetails = ({ action, setAction, coords, segmentsMap, attacksS
         </Button>
       )}
       {/* Board preview */}
-      <Preview action={action} setAction={setAction} selected={selected} setSelected={setSelected} direction={direction} hitUser={currentUser} />
+      <Preview action={action} setAction={setAction} selected={selected} setSelected={setSelected} hitUser={currentUser} />
 
       {/* Users hit */}
       <Header as="h3" style={{ marginBottom: 0 }}>

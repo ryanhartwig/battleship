@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Modal, Button, Header, Menu, Message } from 'semantic-ui-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { characters } from '../../utility/data';
@@ -118,20 +118,6 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
 
     return validRange;
   }, [segmentsMap, attacksSet, range, action.weapons]);
-
-  const weaponRef = useRef<string>(action.weapons[0]);
-
-  const weapon = action.weapons[0];
-  // Reset on change attack (DELETES ALL HITS except user if present)
-  useEffect(() => {
-    if (weaponRef.current === weapon) return;
-    weaponRef.current = weapon;
-
-    setAction((a) => ({
-      ...a,
-      hits: getInitialHits(coords, a.direction, directionalBomb, users, weapon, segmentsMap, attacksSet),
-    }));
-  }, [weapon, segmentsMap, coords, users.self.id, attacksSet, users, directionalBomb]);
 
   const onSetAttacker = useCallback(
     (attacker: number) => {

@@ -26,12 +26,19 @@ export const PreviewField = ({ coords, selected, max, action }: PreviewFieldProp
       .map((h) => h.userId);
   }, [action, coords]);
 
+  const users = useAppSelector((s) => s.game.users);
   const size = useAppSelector((s) => s.settings.size);
   const moveLevels = useAppSelector((s) => s.settings.upgrades.move.length);
 
   const { x, y } = coords;
 
   const hits = useGetUsers(hitUsers);
+  const [selfHit, selfSunk] = useMemo(() => {
+    const hit = action.hits.find((h) => {
+      return h.userId === users.self.id && action.x + (h.oX || 0) === coords.x && action.y + (h.oY || 0) === coords.y;
+    });
+    return [!!hit, !!hit?.sunk];
+  }, [users, action, coords]);
 
   const isSunk = useCallback(
     (id: number) => {
@@ -61,19 +68,35 @@ export const PreviewField = ({ coords, selected, max, action }: PreviewFieldProp
             </p>
           </div>
 
+          {selfHit && (
+            <div>
+              {selfSunk ? (
+                <span style={{ color: 'red' }}>
+                  <strong>SUNK</strong>
+                </span>
+              ) : (
+                <span style={{ color: 'red' }}>HIT</span>
+              )}
+            </div>
+          )}
+
           {/* Players Hit */}
-          {!!hits.length ? (
+          {!!hits.filter((h) => h.id !== users.self.id).length ? (
             <div>
               <p>
-                {hits.map((u) => (
-                  <span key={`preview-field-initial-${u.id}`} className={clsx('preview-hit', { sunk: isSunk(u.id) })}>
-                    {u.initial}{' '}
-                  </span>
-                ))}
+                {hits
+                  .filter((h) => h.id !== users.self.id)
+                  .map((u) => (
+                    <span key={`preview-field-initial-${u.id}`} className={clsx('preview-hit', { sunk: isSunk(u.id) })}>
+                      {u.initial}{' '}
+                    </span>
+                  ))}
               </p>
             </div>
           ) : (
-            <div></div>
+            <div>
+              <p>-</p>
+            </div>
           )}
         </>
       )}

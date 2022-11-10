@@ -1,0 +1,13 @@
+.preview-wrapper {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.preview-fields-wrapper {
+  width: fit-content;
+  margin: 20px auto;
+}
+
+.attack-preview {
+  display: grid;
+}

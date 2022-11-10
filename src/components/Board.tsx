@@ -48,8 +48,7 @@ export const Board = () => {
         onTouchStart={onTouchStart}
         onClick={onClick}
         style={{
-          gridTemplateColumns: `repeat(${size}, 1fr)`,
-          gridTemplateRows: `repeat(${size}, 1fr)`,
+          gridTemplate: `repeat(${size}, 1fr) / repeat(${size}, 1fr)`,
           overflow: 'visible',
           width: `${sizePx}px`,
           height: `${sizePx}px`,

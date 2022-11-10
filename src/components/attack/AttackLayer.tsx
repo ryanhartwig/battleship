@@ -4,10 +4,7 @@ import { useAppSelector } from '../../app/hooks';
 import { BoardAction } from '../../types/action';
 import { User } from '../../types/user';
 import { useMemo } from 'react';
-
-const getUser = (id: number, self: User, opponents: User[]): User => {
-  return self.id === id ? self : (opponents.find((o) => o.id === id) as User);
-};
+import { getUser } from '../../utility/getUser';
 
 interface AttackProps {
   action: BoardAction;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useMemo } from 'react';
+import React, { useEffect, useState, useCallback, useMemo, useRef } from 'react';
 import { Modal, Button, Header, Menu, Message } from 'semantic-ui-react';
 import { useAppDispatch, useAppSelector } from '../../app/hooks';
 import { characters } from '../../utility/data';
@@ -49,22 +49,32 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
 
   const [x, y] = useMemo(() => coords.split('-').map((n) => Number(n)), [coords]);
   const sunk = segmentsMap.get(coords)?.segments.every((seg) => attacksSet.has(`${seg.x}-${seg.y}`) || (seg.x === x && seg.y === y));
-  const [action, setAction] = useState<BoardAction>({
-    id: Date.now(),
-    type: 'attack',
-    attacker: -1,
-    x,
-    y,
-    hits: segmentsMap.has(coords)
-      ? [
-          {
-            userId: users.self.id,
-            sunk,
-          },
-        ]
-      : [],
-    weapons: ['missile'],
-  });
+
+  const initialAction = useMemo(() => {
+    const init = actions.find((a) => a.x === x && a.y === y && a.type === 'attack');
+    if (init) setEdit(true);
+
+    return init;
+  }, [actions, x, y]);
+
+  const [action, setAction] = useState<BoardAction>(
+    initialAction || {
+      id: Date.now(),
+      type: 'attack',
+      attacker: -1,
+      x,
+      y,
+      hits: segmentsMap.has(coords)
+        ? [
+            {
+              userId: users.self.id,
+              sunk,
+            },
+          ]
+        : [],
+      weapons: ['missile'],
+    }
+  );
 
   useEffect(() => {
     setOverride(0);
@@ -112,14 +122,26 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
     return validRange;
   }, [segmentsMap, attacksSet, range, action.weapons]);
 
+  const weaponRef = useRef<string>(action.weapons[0]);
+
+  const weapon = action.weapons[0];
+  // Reset on change attack (DELETES ALL HITS except user if present)
   useEffect(() => {
-    const [x, y] = coords.split('-').map((c) => Number(c));
-    const existingAction = actions.find((a) => a.x === x && a.y === y && a.type === 'attack');
-    if (existingAction) {
-      setAction(existingAction);
-      setEdit(true);
-    }
-  }, [actions, coords]);
+    if (weaponRef.current === weapon) return;
+    weaponRef.current = weapon;
+
+    setAction((a) => ({
+      ...a,
+      hits: segmentsMap.has(coords)
+        ? [
+            {
+              userId: users.self.id,
+              sunk,
+            },
+          ]
+        : [],
+    }));
+  }, [weapon, segmentsMap, coords, users.self.id, sunk]);
 
   const onSetAttacker = useCallback((attacker: number) => {
     setAction((a) => ({ ...a, attacker }));
@@ -134,6 +156,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
   const onOverride = useCallback(() => {
     setOverride((o) => o + 1);
   }, []);
+
   const onSave = useCallback(() => {
     if (edit) {
       dispatch(removeAction([action.id, settings]));
@@ -141,10 +164,12 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
     dispatch(addAction([action as BoardAction, settings]));
     setOpen(false);
   }, [dispatch, action, settings, setOpen, edit]);
+
   const onRemove = useCallback(() => {
     dispatch(removeAction([action.id, settings]));
     setOpen(false);
   }, [dispatch, action.id, settings, setOpen]);
+
   const [valid, reason] = useMemo((): [boolean, string?] => {
     if (action.attacker < 0) {
       return [false, 'You must select an attacker'];
@@ -203,9 +228,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
             </Menu>
           )}
 
-          {/* Start of hidden region */}
-          {action.attacker > -1 && <AttackDetails action={action} setAction={setAction} />}
-          {/* End of hidden region */}
+          {action.attacker > -1 && <AttackDetails action={action} setAction={setAction} coords={coords} segmentsMap={segmentsMap} attacksSet={attacksSet} />}
         </div>
       </Modal.Content>
       <Modal.Actions>
@@ -216,7 +239,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
         {edit ? (
           <>
             <Button color="red" inverted onClick={onRemove}>
-              Delete Action
+              Undo Attack
             </Button>
             <Button primary disabled={!valid} onClick={onSave}>
               Save

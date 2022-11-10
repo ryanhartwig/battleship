@@ -50,3 +50,11 @@ div.main-content {
   width: fit-content;
   height: fit-content;
 }
+
+/* Form */
+#setup-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}

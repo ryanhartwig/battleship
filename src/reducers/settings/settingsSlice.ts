@@ -4,6 +4,8 @@ import { Upgrades } from '../../types/upgrades';
 import { upgradesInitialState } from '../../utility/upgradesData';
 
 export interface SettingsState {
+  version: number;
+  initialized: boolean;
   size: number;
   startPieces: number;
   maxShipLength: number;
@@ -11,7 +13,9 @@ export interface SettingsState {
   upgrades: Upgrades;
 }
 
-const initialState: SettingsState = {
+export const settingsInitialState: SettingsState = {
+  version: 1,
+  initialized: false,
   size: 10,
   startPieces: 10,
   maxShipLength: 8,
@@ -19,18 +23,34 @@ const initialState: SettingsState = {
   upgrades: upgradesInitialState,
 };
 
-const settingsReducer = createSlice({
+let savedState: SettingsState | undefined;
+try {
+  savedState = JSON.parse(localStorage.getItem('settings') as string) as SettingsState;
+  if (savedState.version !== settingsInitialState.version) {
+    savedState = undefined;
+  }
+} catch (e) {
+  // no game/data saved
+}
+
+export const settingsSlice = createSlice({
   name: 'settings',
-  initialState,
+  initialState: savedState || settingsInitialState,
   reducers: {
+    initializeSettings: (state, action: PayloadAction<SettingsState>) => {
+      return action.payload;
+    },
     setStartPieces: (state, action: PayloadAction<number>) => {
       state.startPieces = action.payload;
+    },
+    resetSettings: () => {
+      return settingsInitialState;
     },
   },
 });
 
 export const selectSettings = (state: RootState) => state.settings;
 
-export const { setStartPieces } = settingsReducer.actions;
+export const { initializeSettings, setStartPieces, resetSettings } = settingsSlice.actions;
 
-export default settingsReducer.reducer;
+export default settingsSlice.reducer;

@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 import { Button, Card, Container, Table } from 'semantic-ui-react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { resetSlice } from '../reducers/game/gameSlice';
+import { resetSettings } from '../reducers/settings/settingsSlice';
 import './Rules.css';
 
 export const Rules = () => {
@@ -9,6 +10,7 @@ export const Rules = () => {
   const version = useAppSelector((s) => s.game.version);
   const onReset = useCallback(() => {
     dispatch(resetSlice());
+    dispatch(resetSettings());
   }, [dispatch]);
   return (
     <Container>

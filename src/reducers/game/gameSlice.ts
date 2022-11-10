@@ -206,8 +206,8 @@ export const gameSlice = createSlice({
       state.cash = c(state.cash - upgrades[level + 1].cost);
       state.levels[upgrade] += 1;
     },
-    takeIncome: (state) => {
-      const income = calculateIncome(state.ships, state.actions);
+    takeIncome: (state, action: PayloadAction<number>) => {
+      const income = calculateIncome(state.ships, state.actions, action.payload);
       state.cash = c(state.cash + income);
     },
     addAction: (state, { payload: [_action, settings] }: PayloadAction<[BoardAction, SettingsState]>) => {

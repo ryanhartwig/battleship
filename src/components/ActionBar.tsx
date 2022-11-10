@@ -12,13 +12,14 @@ export const ActionBar = () => {
   const ships = useAppSelector((s) => s.game.ships);
   const actions = useAppSelector((s) => s.game.actions);
   const temporaryShip = useAppSelector((s) => s.game.temporaryShip);
+  const minimumIncome = useAppSelector((s) => s.settings.minimumIncome);
   const [openIncomeConfirmation, setOpenIncomeConfirmation] = useState(false);
 
   const cash = useAppSelector((s) => s.game.cash);
 
   const income = useMemo(() => {
-    return calculateIncome(ships, actions);
-  }, [ships, actions]);
+    return calculateIncome(ships, actions, minimumIncome);
+  }, [ships, actions, minimumIncome]);
 
   const onToggleVisibility = useCallback(() => {
     dispatch(toggleShipVisibility());
@@ -37,9 +38,9 @@ export const ActionBar = () => {
   }, []);
 
   const onConfirmIncome = useCallback(() => {
-    dispatch(takeIncome());
+    dispatch(takeIncome(minimumIncome));
     setOpenIncomeConfirmation(false);
-  }, [dispatch]);
+  }, [dispatch, minimumIncome]);
 
   return (
     <div className="action-bar">

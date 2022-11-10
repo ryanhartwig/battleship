@@ -220,9 +220,7 @@ export const AttackForm = ({ coords, open, setOpen }: AttackFormProps) => {
             </Menu>
           )}
 
-          {/* Start of hidden region */}
           {action.attacker > -1 && <AttackDetails action={action} setAction={setAction} />}
-          {/* End of hidden region */}
         </div>
       </Modal.Content>
       <Modal.Actions>

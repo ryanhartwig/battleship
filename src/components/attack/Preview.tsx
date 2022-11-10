@@ -1,4 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
+import { Button } from 'semantic-ui-react';
 import { BoardAction } from '../../types/action';
 import { fillRange } from '../../utility/previewHelpers';
 import './Preview.css';
@@ -17,9 +18,13 @@ export interface Coord {
   y: number;
 }
 
+type Direction = 'up' | 'right' | 'down' | 'left';
+
 export const Preview = ({ action, setAction, hitUser, selected, setSelected }: PreviewProps) => {
   const [rangeX, setRangeX] = useState<number>(1);
   const [rangeY, setRangeY] = useState<number>(1);
+
+  const [direction, setDirection] = useState<Direction>('right');
 
   const coords: Coord[] = useMemo(() => {
     const { x, y } = action;
@@ -48,12 +53,44 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected }: P
           { x, y },
           { x: x + 8, y },
         ];
+
+        switch (direction) {
+          case 'up':
+            range = [
+              { x, y: y - 8 },
+              { x, y },
+            ];
+            break;
+          case 'right':
+            range = [
+              { x, y },
+              { x: x + 8, y },
+            ];
+            break;
+          case 'down':
+            range = [
+              { x, y },
+              { x, y: y + 8 },
+            ];
+            break;
+          case 'left':
+            range = [
+              { x: x - 8, y },
+              { x, y },
+            ];
+        }
         break;
     }
     setRangeX(Math.max(range[0].x, range[1].x) - Math.min(range[0].x, range[1].x) + 1);
     setRangeY(Math.max(range[0].y, range[1].y) - Math.min(range[0].y, range[1].y) + 1);
     return fillRange([...range]);
-  }, [action]);
+  }, [action, direction]);
+
+  const onCycleDirection = useCallback(() => {
+    const directions: Direction[] = ['up', 'right', 'down', 'left'];
+    const current = directions.indexOf(direction);
+    setDirection(directions[current + 1] || directions[0]);
+  }, [direction]);
 
   const onSelectField = useCallback(
     (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -68,16 +105,12 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected }: P
       if (hitUser) {
         setAction((a) => {
           const next: BoardAction = JSON.parse(JSON.stringify(a));
-          console.log(next.hits);
           const hitIndex = next.hits.findIndex((h) => {
-            console.log(h.userId === hitUser);
             if (!oX && !oY) {
               return !h.oX && !h.oY && h.userId === hitUser;
             }
             return h.oX === oX && h.oY === oY && h.userId === hitUser;
           });
-
-          console.log(hitIndex);
 
           if (hitIndex === -1) {
             [oX, oY] = [oX === 0 ? undefined : oX, oY === 0 ? undefined : oY];
@@ -98,18 +131,21 @@ export const Preview = ({ action, setAction, hitUser, selected, setSelected }: P
 
   return (
     <div className="preview-wrapper">
-      <div
-        className="attack-preview"
-        style={{
-          gridTemplateColumns: `repeat(${rangeX}, 1fr)`,
-          gridTemplateRows: `repeat(${rangeY})`,
-        }}
-        onClick={onSelectField}
-      >
-        {coords.map((coord) => {
-          const { x, y } = coord;
-          return <PreviewField coords={{ x, y }} selected={selected} max={{ x: coords[coords.length - 1].x, y: coords[coords.length - 1].y }} action={action} />;
-        })}
+      {action.weapons[0] === 'directional' && <Button onClick={onCycleDirection}>Rotate</Button>}
+      <div className="preview-fields-wrapper">
+        <div
+          className="attack-preview"
+          style={{
+            gridTemplateColumns: `repeat(${rangeX}, 1fr)`,
+            gridTemplateRows: `repeat(${rangeY})`,
+          }}
+          onClick={onSelectField}
+        >
+          {coords.map((coord) => {
+            const { x, y } = coord;
+            return <PreviewField coords={{ x, y }} selected={selected} max={{ x: coords[coords.length - 1].x, y: coords[coords.length - 1].y }} action={action} />;
+          })}
+        </div>
       </div>
     </div>
   );

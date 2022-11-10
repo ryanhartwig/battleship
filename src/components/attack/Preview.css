@@ -1,4 +1,12 @@
 .preview-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin-top: 15px;
+}
+
+.preview-fields-wrapper {
   width: fit-content;
   margin: 20px auto;
 }

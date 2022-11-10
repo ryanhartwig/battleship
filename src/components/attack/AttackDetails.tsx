@@ -138,7 +138,7 @@ export const AttackDetails = ({ action, setAction }: AttackDetailsProps) => {
     <>
       <div className="attack-types" style={{ justifyContent: 'center' }}>
         <div className="icon-wrapper">
-          <Icon1 />
+          <Icon1 style={action.weapons[0] === 'directional' ? { transform: 'rotate(270deg)' } : {}} />
         </div>
         {Icon2 && (
           <>

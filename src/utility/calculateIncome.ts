@@ -14,7 +14,7 @@ const incomeMap: Record<number, number> = {
   8: 18,
 };
 
-export const calculateIncome = (ships: Ship[], actions: BoardAction[]) => {
+export const calculateIncome = (ships: Ship[], actions: BoardAction[], minimumIncome: number = 10) => {
   let income = 0;
 
   let attackSet = new Set();
@@ -50,5 +50,5 @@ export const calculateIncome = (ships: Ship[], actions: BoardAction[]) => {
     income += incomeMap[segmentLength];
   });
 
-  return c(income);
+  return c(Math.max(income, minimumIncome));
 };

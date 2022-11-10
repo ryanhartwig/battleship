@@ -7,6 +7,7 @@ export interface SettingsState {
   size: number;
   startPieces: number;
   maxShipLength: number;
+  minimumIncome: number;
   upgrades: Upgrades;
 }
 
@@ -14,6 +15,7 @@ const initialState: SettingsState = {
   size: 10,
   startPieces: 10,
   maxShipLength: 8,
+  minimumIncome: 10,
   upgrades: upgradesInitialState,
 };
 

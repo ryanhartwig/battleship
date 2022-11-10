@@ -1,7 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { selectShip, setTemporaryShip } from '../reducers/game/gameSlice';
+import { DirectionalBomb } from '../types/items';
 import { ShipSegment } from '../types/ship';
+import { getRange } from '../utility/getRange';
 
 const isField = (e: any) => {
   return e.target.className.includes('field');
@@ -13,6 +15,7 @@ export const useEditShip = () => {
   const editing = useAppSelector((s) => s.game.editingShip);
   const actions = useAppSelector((s) => s.game.actions);
   const size = useAppSelector((state) => state.settings.size + state.game.levels.movement);
+  const bomb = useAppSelector((state) => state.game.store.find((s) => s.type === 'directional') as DirectionalBomb);
   const placingRef = useRef(placing);
   const remainingSegments = useAppSelector((state) => state.game.inventory.segment);
   const startCoordsRef = useRef<string | undefined>();
@@ -52,14 +55,17 @@ export const useEditShip = () => {
     const result = new Set<string>();
     actions
       .filter((a) => a.type === 'attack')
-      .forEach(({ x, y, hits }) => {
+      .forEach(({ x, y, weapons, direction }) => {
         result.add(`${x}-${y}`);
-        hits.forEach(({ oX, oY }) => {
-          result.add(`${x + (oX ?? 0)}-${y + (oY ?? 0)}`);
-        });
+        const range = getRange(`${x}-${y}`, weapons[0], direction, bomb);
+        for (let cX = range[0].x; cX <= range[1].x; cX++) {
+          for (let cY = range[0].y; cY <= range[1].y; cY++) {
+            result.add(`${cX}-${cY}`);
+          }
+        }
       });
     return result;
-  }, [actions]);
+  }, [actions, bomb]);
 
   useEffect(() => {
     if (!startCoordsRef.current || !endCoords) {

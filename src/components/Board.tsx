@@ -1,7 +1,7 @@
 import clsx from 'clsx';
 
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../app/hooks';
+import React, { useCallback, useMemo, useState } from 'react';
+import { useAppSelector } from '../app/hooks';
 import { useEditShip } from '../hooks/useEditShip';
 import { Field } from './Field';
 import { ShipItem, ShipLayer } from './ShipLayer';
@@ -10,11 +10,9 @@ import { useBoardSize } from '../hooks/useBoardSize';
 import { Inventory } from './Inventory';
 import { AttackForm } from './attack/AttackForm';
 import { AttackLayer } from './attack/AttackLayer';
-import { toggleShipVisibility } from '../reducers/game/gameSlice';
 
 export const Board = () => {
   const sizePx = useBoardSize();
-  const dispatch = useAppDispatch();
 
   const size = useAppSelector((s) => s.settings.size + s.settings.upgrades.move.length - 1);
   const fields = useMemo(() => new Array(size * size).fill(''), [size]);
@@ -34,10 +32,6 @@ export const Board = () => {
     },
     [placeMode]
   );
-
-  useEffect(() => {
-    dispatch(toggleShipVisibility(!open));
-  }, [dispatch, open]);
 
   const { onMouseDown, onMouseMove, onMouseUp, onTouchMove, onTouchStart, temporaryShip } = useEditShip();
 

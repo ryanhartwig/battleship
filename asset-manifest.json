@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/battleship/static/css/main.7afcf0f7.css",
-    "main.js": "/battleship/static/js/main.451e054b.js",
+    "main.js": "/battleship/static/js/main.f8c67ef7.js",
     "static/js/787.f9c4e819.chunk.js": "/battleship/static/js/787.f9c4e819.chunk.js",
     "static/media/brand-icons.svg": "/battleship/static/media/brand-icons.6729d29753e000c17489.svg",
     "static/media/icons.svg": "/battleship/static/media/icons.62d9dae4e0040e81c980.svg",
@@ -22,11 +22,11 @@
     "static/media/outline-icons.woff2": "/battleship/static/media/outline-icons.687a4990ea22bb1a49d4.woff2",
     "index.html": "/battleship/index.html",
     "main.7afcf0f7.css.map": "/battleship/static/css/main.7afcf0f7.css.map",
-    "main.451e054b.js.map": "/battleship/static/js/main.451e054b.js.map",
+    "main.f8c67ef7.js.map": "/battleship/static/js/main.f8c67ef7.js.map",
     "787.f9c4e819.chunk.js.map": "/battleship/static/js/787.f9c4e819.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.7afcf0f7.css",
-    "static/js/main.451e054b.js"
+    "static/js/main.f8c67ef7.js"
   ]
 }

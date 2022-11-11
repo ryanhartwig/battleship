@@ -8,6 +8,8 @@ import './Rules.css';
 export const Rules = () => {
   const dispatch = useAppDispatch();
   const version = useAppSelector((s) => s.game.version);
+  const sversion = useAppSelector((s) => s.settings.version);
+  const minInc = useAppSelector((s) => s.settings.minimumIncome);
   const onReset = useCallback(() => {
     dispatch(resetSlice());
     dispatch(resetSettings());
@@ -16,7 +18,9 @@ export const Rules = () => {
     <Container>
       <Card style={{ width: '100%' }}>
         <Card.Content>
-          <h2>Game Rules (v{version})</h2>
+          <h2>
+            Game Rules (v{version}.{sversion})
+          </h2>
           <h2>Your Turn</h2>
           <p>Your turn is broken into 2 phases:</p>
           <ul>
@@ -35,6 +39,9 @@ export const Rules = () => {
           </p>
           <p>You may choose to attack a square you belong to. If you do, you must announce that you have hit your own ship.</p>
           <h2>Income</h2>
+          <p>
+            Minimum income: <strong>${minInc.toFixed(2)}</strong>
+          </p>
           <p>
             Ships of varying lengths contribute more to your income. The calculation is as follows.
             <br />

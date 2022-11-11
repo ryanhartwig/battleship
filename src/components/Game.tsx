@@ -12,6 +12,7 @@ import { useOrientation } from '../hooks/useOrientation';
 import { useAppDispatch, useAppSelector } from '../app/hooks';
 import { initializeSettings, settingsInitialState, SettingsState } from '../reducers/settings/settingsSlice';
 import { setSegments } from '../reducers/game/gameSlice';
+import { upgradesInitialState } from '../utility/upgradesData';
 
 type Tab = 'arsenal' | 'upgrades' | 'rules' | 'players';
 
@@ -30,19 +31,26 @@ export const Game = () => {
 
   const orientation = useOrientation();
   const initialized = useAppSelector((s) => s.settings.initialized);
+  const [moveLevels, setMoveLevels] = useState<number>(5);
 
   // On reset game, reset settings
   useEffect(() => {
     setSettingsState({ ...settingsInitialState, initialized: true });
+    setMoveLevels(5);
   }, [initialized]);
 
   const onClose = useCallback(() => {
-    dispatch(initializeSettings(settingsState));
+    dispatch(
+      initializeSettings({
+        ...settingsState,
+        upgrades: { ...upgradesInitialState, move: upgradesInitialState.move.slice(0, moveLevels + 1) },
+      })
+    );
     dispatch(setSegments(settingsState.startPieces));
-  }, [dispatch, settingsState]);
+  }, [dispatch, moveLevels, settingsState]);
 
-  const onChange = useCallback((key: string, value: number) => {
-    setSettingsState((s) => ({ ...s, [key]: value }));
+  const onChange = useCallback((e: any) => {
+    setSettingsState((s) => ({ ...s, [e.target.name]: Number(e.target.value) }));
   }, []);
 
   const createTabProps = (t: Tab) => {
@@ -61,21 +69,15 @@ export const Game = () => {
         <Modal.Header style={{ textAlign: 'center' }}>Welcome to battleship!</Modal.Header>
         <Modal.Content id="setup-form">
           <Header as="h3">Board starting size</Header>
-          <Input
-            type="number"
-            value={settingsState.size}
-            onChange={(e) => {
-              onChange('size', Number(e.target.value));
-            }}
-          ></Input>
+          <Input type="number" value={settingsState.size} name="size" onChange={onChange}></Input>
           <Header as="h3">Starting segments</Header>
-          <Input
-            type="number"
-            value={settingsState.startPieces}
-            onChange={(e) => {
-              onChange('startPieces', Number(e.target.value));
-            }}
-          ></Input>
+          <Input type="number" value={settingsState.startPieces} name="startPieces" onChange={onChange}></Input>
+          <Header as="h3">Minimum Income</Header>
+          <Input type="number" value={settingsState.minimumIncome} name="minimumIncome" onChange={onChange}></Input>
+          <Header as="h3">Max Ship Length</Header>
+          <Input type="number" value={settingsState.maxShipLength} name="maxShipLength" onChange={onChange}></Input>
+          <Header as="h3">Move Levels</Header>
+          <Input type="number" value={moveLevels} name="maxShipLength" max="15" min="0" onChange={(e) => setMoveLevels(Number(e.target.value))}></Input>
         </Modal.Content>
         <Modal.Actions style={{ display: 'flex', justifyContent: 'center' }}>
           <Button onClick={onClose} color="blue">

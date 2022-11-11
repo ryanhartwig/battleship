@@ -14,7 +14,7 @@ export interface SettingsState {
 }
 
 export const settingsInitialState: SettingsState = {
-  version: 0,
+  version: 1,
   initialized: false,
   size: 10,
   startPieces: 10,

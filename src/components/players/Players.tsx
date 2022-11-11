@@ -7,6 +7,7 @@ import { AddEditUser } from './AddEditUser';
 
 export const Players = () => {
   const dispatch = useAppDispatch();
+  const actions = useAppSelector((s) => s.game.actions);
 
   const { self, opponents } = useAppSelector((s) => s.game.users);
 
@@ -37,6 +38,7 @@ export const Players = () => {
                   <div>
                     <Button
                       size="mini"
+                      disabled={!!actions.length}
                       onClick={() => {
                         dispatch(removeUser(player.id));
                       }}

@@ -62,7 +62,7 @@ interface GameState {
 }
 
 const initialState: GameState = {
-  version: 4,
+  version: 5,
   cash: 0,
   ships: [],
   placeMode: false,

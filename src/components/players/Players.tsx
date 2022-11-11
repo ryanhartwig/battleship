@@ -1,13 +1,10 @@
-import { Button, Container, Segment } from 'semantic-ui-react';
-import { useAppDispatch, useAppSelector } from '../../app/hooks';
+import { Container, Segment } from 'semantic-ui-react';
+import { useAppSelector } from '../../app/hooks';
 
 import './Players.css';
-import { removeUser } from '../../reducers/game/gameSlice';
 import { AddEditUser } from './AddEditUser';
 
 export const Players = () => {
-  const dispatch = useAppDispatch();
-
   const { self, opponents } = useAppSelector((s) => s.game.users);
 
   return (
@@ -34,16 +31,6 @@ export const Players = () => {
                   <p>
                     {player.name} <span>({player.initial})</span>
                   </p>
-                  <div>
-                    <Button
-                      size="mini"
-                      onClick={() => {
-                        dispatch(removeUser(player.id));
-                      }}
-                    >
-                      Remove
-                    </Button>
-                  </div>
                 </Segment>
               );
             })}

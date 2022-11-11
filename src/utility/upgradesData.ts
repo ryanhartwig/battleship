@@ -31,7 +31,7 @@ export const upgradesInitialState: Upgrades = {
     [50, 1],
     [80, 0],
   ].map(([cost, segmentCost]) => ({ cost, segmentCost })),
-  move: [0, 20, 30, 40, 50, 60].map((cost) => ({ cost })),
+  move: [0, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160].map((cost) => ({ cost })),
   range: [
     [0, 1],
     [100, 2],

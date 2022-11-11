@@ -19,7 +19,7 @@ export const Rules = () => {
       <Card style={{ width: '100%' }}>
         <Card.Content>
           <h2>
-            Game Rules (v{version}.{sversion})
+            Game Rules (v1.{version}.{sversion})
           </h2>
           <h2>Your Turn</h2>
           <p>Your turn is broken into 2 phases:</p>

@@ -42,7 +42,10 @@ export const Arsenal = () => {
         {items.map((item) => {
           const Icon = itemIcons[item.type];
           let style = item.type === 'directional' ? { transform: 'rotate(270deg)' } : undefined;
-          const disabled = c(cash - item.cost) < 0;
+          let disabled = c(cash - item.cost) < 0;
+          if (item.type === 'segment') {
+            disabled = c(cash - (item.cost - shipLevel)) < 0;
+          }
           return (
             <Card key={item.type} className="store-item" style={{ width: '180px', height: '180px' }}>
               <Card.Content>

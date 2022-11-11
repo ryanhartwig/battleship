@@ -76,7 +76,7 @@ export const Game = () => {
           <Input type="number" value={settingsState.minimumIncome} name="minimumIncome" onChange={onChange}></Input>
           <Header as="h3">Max Ship Length</Header>
           <Input type="number" value={settingsState.maxShipLength} name="maxShipLength" onChange={onChange}></Input>
-          <Header as="h3">Move Levels</Header>
+          <Header as="h3">Move Levels (Max 15)</Header>
           <Input type="number" value={moveLevels} name="maxShipLength" max="15" min="0" onChange={(e) => setMoveLevels(Number(e.target.value))}></Input>
         </Modal.Content>
         <Modal.Actions style={{ display: 'flex', justifyContent: 'center' }}>

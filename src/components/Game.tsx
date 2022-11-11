@@ -26,7 +26,7 @@ const tabColors: Record<Tab, SemanticCOLORS> = {
 export const Game = () => {
   const dispatch = useAppDispatch();
 
-  const [tab, setTab] = useState<Tab>('upgrades');
+  const [tab, setTab] = useState<Tab>('rules');
   const [settingsState, setSettingsState] = useState<SettingsState>({ ...settingsInitialState, initialized: true });
 
   const orientation = useOrientation();

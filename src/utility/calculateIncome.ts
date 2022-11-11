@@ -2,18 +2,6 @@ import { BoardAction } from '../types/action';
 import { Ship } from '../types/ship';
 import { c } from './c';
 
-const incomeMap: Record<number, number> = {
-  0: 0,
-  1: 1,
-  2: 2,
-  3: 3,
-  4: 6,
-  5: 9,
-  6: 12,
-  7: 15,
-  8: 18,
-};
-
 export const calculateIncome = (ships: Ship[], actions: BoardAction[], minimumIncome: number = 10) => {
   let income = 0;
 
@@ -47,7 +35,7 @@ export const calculateIncome = (ships: Ship[], actions: BoardAction[], minimumIn
   });
 
   shipChunks.forEach((segmentLength) => {
-    income += incomeMap[segmentLength];
+    income += segmentLength < 4 ? segmentLength : 3 + (segmentLength - 3) * 3;
   });
 
   return c(Math.max(income, minimumIncome));

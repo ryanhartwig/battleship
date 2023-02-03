@@ -2,7 +2,7 @@
 
 <!-- Button Shields (only available when repo goes public)  -->
 
-![GitHub repo size](https://img.shields.io/github/repo-size/battleship/amped?logo=GitHub&style=for-the-badge)
+![GitHub repo size](https://img.shields.io/github/repo-size/ryanhartwig/battleship?logo=GitHub&style=for-the-badge)
 
 <!-- PROJECT LOGO -->
 <br />
